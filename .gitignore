@@ -1,0 +1,9 @@
+/target/
+target/*
+.classpath
+src/main/webapp/WEB-INF/gulp/node_modules/
+/bin/
+.idea/*
+.idea/
+autocode.iml
+doc/gulp/node_modules

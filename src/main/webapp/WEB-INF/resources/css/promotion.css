@@ -1,0 +1,84 @@
+@CHARSET "UTF-8";
+/***
+Bootstrap Wizard
+***/
+.form-wizard .progress {
+  margin-bottom: 15px;
+}
+.form-wizard .steps {
+  padding: 5px 0;
+  margin-bottom: 5px;
+  background-color: transparent;
+  background-image: none;
+  filter: none;
+  border: 0px;
+  box-shadow: none;
+}
+.form-wizard .steps > li > a.step {
+  background-color: transparent;
+  background-image: none;
+  filter: none;
+  border: 0px;
+  box-shadow: none;
+}
+.form-wizard .steps > li > a.step:hover {
+  background: none;
+}
+.form-wizard .steps > li > a.step > .number {
+  background-color: #eee;
+  display: inline-block;
+  text-align: center !important;
+  font-size: 16px;
+  font-weight: 300;
+  padding: 11px 15px 13px 15px;
+  margin-right: 3px;
+  height: 45px;
+  width: 45px;
+  -webkit-border-radius: 50% !important;
+  -moz-border-radius: 50% !important;
+  border-radius: 50% !important;
+}
+.form-wizard .steps > li > a.step > .desc {
+  display: inline-block;
+  font-size: 16px;
+  font-weight: 300;
+}
+.form-wizard .steps > li > a.step > .desc > i {
+  display: none;
+   color: #fff;
+}
+.form-wizard .steps > li.active > a.step .number {
+  background-color: #1754b3;
+  color: #fff;
+}
+.form-wizard .steps > li.active > a.step .desc {
+  color: #333;
+}
+.form-wizard .steps > li.done > a.step .number {
+  background-color: #ecbc29;
+  color: #fff;
+}
+.form-wizard .steps > li.done > a.step .desc {
+  color: #333;
+}
+.form-wizard .steps > li.done > a.step .desc i {
+  font-size: 12px;
+  font-weight: normal;
+  color: #999;
+  display: inline-block;
+}
+
+@media (min-width: 768px) and (max-width: 1200px) {
+  /* 768px & 1200px */
+  .form-wizard .step .desc {
+    margin-top: 10px;
+    display: block;
+  }
+  
+}
+@media (max-width: 768px) {
+  /* 768px */
+  .form-wizard .steps > li > a {
+    text-align: left;
+  }
+}

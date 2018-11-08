@@ -1,0 +1,280 @@
+
+body {
+    margin: 0px;
+    font-family: "微软雅黑", "黑体", arial, "宋体", helvetica, sans-serif;
+    font-size: 14px;
+    color: #555;
+    line-height: 24px;
+}
+
+
+/*优视通项目的头部样式*/
+.yst-header {
+    height: 80px;
+}
+.yst-header-inner {
+    width: 1190px;
+    height: 100%;
+    line-height: 80px;
+    margin: 0 auto;
+}
+.yst-header-icon {
+    height: 35px;
+    width: 125px;
+    float: left;
+    position: relative;
+    top: 50%;
+    margin-top: -17px;
+    background: url(../../images/login/yst-icon1.png) no-repeat;
+}
+.yst-header-phone {
+    float: right;
+    font-size: 18px;
+}
+
+/*优视通首页的轮播动画样式*/
+.yst-banner {
+    height: 480px;
+    min-width: 1190px;
+}
+.yst-section1 {
+    height: 512px;
+}
+.yst-section1-outline {
+    position: relative;
+    margin: 50px auto 0;
+    width: 1190px;
+    height: 100%;
+}
+.yst-section1-left,
+.yst-section1-right
+{
+    float: left;
+}
+.yst-section1-right{
+    margin-left: 44px;
+}
+.yst-section1-general {
+    padding-left: 75px;
+    margin-top: 40px;
+}
+.yst-section1-title {
+    font-family: '微软雅黑';
+    font-size: 20px;
+    line-height: 24px;
+    color: #3399e0;
+}
+.yst-section1-intro {
+    font-family: '微软雅黑';
+    font-size: 14px;
+    font-weight: normal;
+    color: #555;
+    line-height: 24px;
+    margin-top: 13px;
+    margin-bottom: 10px;
+}
+.yst-section1-general a {
+    font-family: '宋体 Regular';
+    font-size: 12px;
+    font-weight: normal;
+    color: #aaa;
+    text-decoration: none;
+}
+.yst-section1-left-1 {
+    background: url("../../images/login/yst-icon2.png") no-repeat;
+}
+.yst-section1-left-2 {
+    background: url("../../images/login/yst-icon4.png") no-repeat;
+}
+.yst-section1-left-3 {
+    background: url("../../images/login/yst-icon6.png") no-repeat;
+}
+.yst-section1-right-1 {
+    background: url("../../images/login/yst-icon3.png") no-repeat;
+}
+.yst-section1-right-2 {
+    background: url("../../images/login/yst-icon5.png") no-repeat;
+}
+.yst-section1-right-3 {
+    background: url("../../images/login/yst-icon7.png") no-repeat;
+}
+.yst-section1-loghelp {
+    font-size: 16px;
+    color: #555;
+    width: 345px;
+    height: 425px;
+    float: right;
+    margin-top: 40px;
+    background: url("../../images/login/yst-loginHelp.png") no-repeat;
+}
+.yst-section1-loghelp div {
+   line-height: 30px;
+   position: relative;
+   top: 70%;
+   left: 15%;
+}
+.yst-section1-loghelp span {
+    color: #aaa;
+}
+.yst-login {
+    height: 220px;
+    width: 350px;
+    border-radius: 4px;
+    border:1px solid #fff;
+    border-bottom: 5px solid #eee;
+    background: #fff;
+    position: absolute;
+    top: -220px;
+    right: 0px;
+}
+.yst-login-title {
+    font-size: 18px;
+    line-height: 20px;
+    color: #555;
+    margin:18px 0 0 20px ;
+}
+.yst-login-input {
+    float: left;
+    width: 194px;
+    height: 115px;
+    margin: 20px 20px 0 20px;
+}
+.yst-form-input {
+    border:1px solid #ddd;
+    vertical-align: middle;
+    font-size: 12px;
+    color: #555;
+    outline: none;
+    height: 31px;
+    width: 175px;
+    padding: 0 9px;
+    margin-bottom: 10px;
+}
+.yst-form-input-default {
+    color: #bbb;
+}
+.yst-login-btn {
+    font-size: 20px;
+    text-align: center;
+    color: #fff;
+    float: right;
+    width: 92px;
+    height: 75px;
+    background: #3399e0;
+    margin-right: 20px;
+    margin-top: 20px;
+    line-height: 79px;
+    cursor: pointer;
+}
+input.yst-login-input-yz {
+    width: 78px;
+    float: left;
+    display: none;
+}
+.yst-login-img {
+    float: left;
+    margin-left: 10px;
+    display: none;
+}
+.yst-login-rememberMeCon {
+    font-size: 12px;
+    vertical-align: top;
+    color: #aaa;
+    cursor: pointer;
+}
+.yst-login-tips {
+    display: block !important;
+    color: #C83100;
+    width: 90%;
+    display: none;
+    margin: 0 20px 0 20px;
+    clear: both;
+    line-height: 22px;
+}
+.nogood {
+    box-shadow: 0 0 0 5px rgba(252, 245, 245, 0.8);
+    border-radius: 0px;
+    border: 1px solid #ECA9A4;
+}
+.yst-section2 {
+    height: 400px;
+    margin-top: 15px;
+    background:#fafafa ;
+}
+.yst-section2-outline {
+    width: 1190px;
+    height: 100%;
+    margin: 0 auto;
+}
+.yst-section2-newbee,
+.yst-section2-news {
+    float: left;
+}
+.yst-section2-newbee .newbee-title {
+    font-size: 24px;
+    line-height: 24px;
+    margin-top: 60px;
+}
+.newbee-step-substep1,
+.newbee-step-substep2,
+.newbee-step-substep3,
+.newbee-step-substep4 {
+    float: left;
+    font-size: 18px;
+    width: 205px;
+    height: 170px;
+    margin-top: 40px;
+}
+.newbee-step-substep1 {
+    background: url("../../images/login/yst-icon8.png") no-repeat;
+}
+.newbee-step-substep2 {
+    background: url("../../images/login/yst-icon9.png") no-repeat;
+}
+.newbee-step-substep3 {
+    background: url("../../images/login/yst-icon10.png") no-repeat;
+}
+.newbee-step-substep4 {
+    background: url("../../images/login/yst-icon11.png") no-repeat;
+}
+.yst-section2-newbee .newbee-step span {
+    position: relative;
+    top: 80%;
+    left: 15px ;
+}
+.yst-section2-news {
+    margin-left: 25px;
+}
+.yst-section2-news .news-title {
+    font-size: 24px;
+    line-height: 24px;
+    margin-top: 60px;
+}
+.yst-section2-news ul {
+    list-style-type: none;
+}
+.yst-section2-news li {
+    line-height: 40px;
+    font-size: 14px;
+    height: 40px;
+    width: 337px;
+    margin-left: -40px;
+
+}
+.yst-section2-news-summary {
+    float: left;
+    padding-left: 7px;
+    background: url("../../images/login/yst-icon12.png") 0 50% no-repeat;
+}
+.yst-section2-news-time {
+    float: right;
+}
+.yst-section2-news .black-background {
+    background: #f3f3f3;
+}
+.yst-footer {
+    height: 60px;
+    padding-top: 40px;
+    font-size: 12px;
+    text-align: center;
+}

@@ -1,0 +1,14 @@
+ssh -i ~/.ssh/eddymac.pem AutocodeWeb@18.217.12.126
+
+ssh -i ~/.ssh/eddymac.pem ec2-user@ec2-18-221-18-13.us-east-2.compute.amazonaws.com
+
+
+ssh -i ~/.ssh/eddymac.pem ec2-user@ec2-18-188-105-171.us-east-2.compute.amazonaws.com
+ssh -i ~/.ssh/eddymac.pem ec2-user@ec2-18-221-18-13.us-east-2.compute.amazonaws.com
+
+MySQL:
+mysql -h autocode22.cfc0nevhkpvq.us-east-2.rds.amazonaws.com -P 3306 -uautoode -p
+EpTqjWgRywNAbclSZPfd3hxkTxuhODkC
+
+
+mysql -h autocode22.cfc0nevhkpvq.us-east-2.rds.amazonaws.com -P 3306 -uautoode -pEpTqjWgRywNAbclSZPfd3hxkTxuhODkC

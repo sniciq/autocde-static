@@ -1,0 +1,74 @@
+.yst-showcase {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    background: #fff;
+    overflow: hidden;
+}
+.yst-paper {
+    position: absolute;
+    height: 12px;
+    width: 100%;
+    text-align: center;
+    top: 93%;
+}
+.yst-paper div{
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+    width: 12px;
+    border-radius: 6px;
+    height: 12px;
+    margin-left: 10px;
+    background: #82ccff;
+    /*background: url("../../images/login/icon-paper.png") no-repeat;*/
+    cursor: pointer;
+}
+.yst-paper div[class = current]{
+    cursor: default;
+    background: #fff;
+    /*background: url("../../images/login/icon-paper-current.png") no-repeat;*/
+}
+.yst-btncontainer {
+    width: 1190px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -595px;
+    margin-top: -50px;
+    visibility: hidden;
+}
+.yst-btnprev {
+    cursor: pointer;
+    width: 48px;
+    height: 100px;
+    float: left;
+    /*visibility: visible;*/
+    background: url("../../images/login/btn-prev.png") 50% 50% no-repeat;
+}
+.yst-btnnext {
+    cursor: pointer;
+    width: 48px;
+    height: 100px;
+    float: right;
+    /*visibility: visible;*/
+    background: url("../../images/login/btn-next.png") 50% 50% no-repeat;
+}
+.yst-pages {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 200%;
+    height: 100%;
+}
+.yst-page {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    text-align: center;
+}
+.yst-page img {
+    display: inline-block;
+}

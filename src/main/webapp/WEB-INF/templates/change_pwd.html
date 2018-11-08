@@ -1,0 +1,47 @@
+<div cg-busy="{promise:promise,templateUrl:'',message:'正在提交...',backdrop:true,delay:0,minDuration:0}">
+<form role="form" novalidate name="myForm">
+<div style="padding: 20px" layout="row" layout-align="center center">
+	<div class="md-whiteframe-24dp" flex-sm="100" flex-gt-sm="50"  flex-gt-md="50" flex-gt-lg="33">
+		<md-toolbar class="md-primary">
+			<div class="md-toolbar-tools">
+				<h2 class="md-flex">修改密码</h2>
+			</div>
+		</md-toolbar>
+		<md-content flex layout-padding>
+		    <md-input-container md-no-float class="md-block">
+				<md-icon class="material-icons">lock</md-icon>
+				<input ng-model="rstForm.password" name="password" type="password" placeholder="当前密码" required>
+				<div ng-show="myForm.password.$dirty && myForm.password.$error">
+					<span style="color:red">
+						<span ng-show="myForm.password.$error.required">密码必填</span>
+					</span>
+				</div>
+		    </md-input-container>
+		    <md-input-container md-no-float class="md-block">
+				<md-icon class="material-icons">lock</md-icon>
+				<input ng-model="rstForm.passwordNew" name="passwordNew" type="password" placeholder="登录密码" ng-pattern="/^(?=.*[0-9].*)(?=.*[A-Z].*)(?=.*[a-z].*).{6,}$/" required>
+				<div ng-show="myForm.passwordNew.$dirty && myForm.passwordNew.$error">
+					<span style="color:red">
+						<span ng-show="myForm.passwordNew.$error.required">密码必填</span>
+						<span ng-show="myForm.passwordNew.$error.pattern">长度必须超过6位，必须包含大写字母、小写字母和数字</span>
+					</span>
+				</div>
+		    </md-input-container>
+		    <md-input-container md-no-float class="md-block">
+				<md-icon class="material-icons">lock</md-icon>
+				<input ng-model="rstForm.passwordConf" name="passwordConf" type="password" placeholder="确认密码" required compare-to="rstForm.passwordNew">
+				<div ng-show="myForm.passwordConf.$dirty && myForm.passwordConf.$error">
+					<span style="color:red">
+						<span ng-show="myForm.passwordConf.$error.required">密码必填</span>
+						<span ng-show="myForm.passwordConf.$error.compareTo">确认密码不一致</span>
+					</span>
+				</div>
+		    </md-input-container>
+		</md-content>
+		<div flex layout="row" layout-align="center center">
+			<md-button flex type="submit" class="md-raised md-primary" ng-disabled="myForm.$invalid" ng-click="doOK($event)">确认</md-button>
+		</div>
+	</div>
+</div>
+</form>
+</div>

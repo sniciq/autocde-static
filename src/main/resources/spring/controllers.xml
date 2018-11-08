@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+	<mvc:view-controller path="/fileNotExists" view-name="fileNotExists.jsp"/>
+	
+	<mvc:view-controller path="/sign_up" view-name="sign_up.jsp"/>
+	<mvc:view-controller path="/signUpSuccess" view-name="sign_up_success.jsp"/>
+	
+	<mvc:view-controller path="/active_success" view-name="sign_up_active_success.jsp"/>
+	<mvc:view-controller path="/active_error" view-name="sign_up_active_error.jsp"/>
+	<mvc:view-controller path="/error" view-name="error.jsp"/>
+	<mvc:view-controller path="/noauth" view-name="noauth.jsp"/>
+	<mvc:view-controller path="/sessionout" view-name="sessionout.jsp"/>
+	<mvc:view-controller path="/index" view-name="index.jsp"/>
+	<mvc:view-controller path="/login" view-name="login.jsp"/>
+	<mvc:view-controller path="/psw_forget" view-name="psw_forget.jsp"/>
+	
+</beans>

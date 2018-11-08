@@ -1,0 +1,940 @@
+<md-button class="md-icon-button" ng-click="ngScrollTo('doc_index')" style="position:fixed;bottom:30px;right:20px"><md-icon class="material-icons">file_upload</md-icon><md-tooltip md-direction="left">返回目录</md-tooltip></md-button><article class="docs-content"><p>本文将给大家介绍一些高级点的功能，可以轻松的集成到AC生成的代码中，也可以加到你现有的系统中。</p><p>有时候，一个小小的升级，就会给你的系统增色不少！</p><p>本文中提到的各解决方案，都只是本人的一些见解，虽算不上仙人指路，但也足以解决大部分问题，新同学可以深入研究下；如果您是高手牛人，那就在茶余饭后，百般无聊之时，做一笑谈吧！</p><p>本文中的配置，不会出现在AC生成的代码中，使用的同学需要按照说明自行配置。</p><div style="background-color:#FBF4E0"><p id="doc_index" style="margin-bottom:6px;font-weight:700">文档目录：</p><ul style="font-weight:700"><li><a href="" ng-click="ngScrollTo('mail')">一、配置邮件</a></li><li><a href="" ng-click="ngScrollTo('freemaker')">二、配置Freemarker，生成静态页面、实现PDF导出</a></li><li><a href="" ng-click="ngScrollTo('task')">三、增加定时任务，管理你的任务</a></li><li><a href="" ng-click="ngScrollTo('SFTPFile')">四、读写远程文件服务器，重要文件放在本机是不安全的</a></li><li><a href="" ng-click="ngScrollTo('excel')">五、超大excel报表导出</a></li><li><a href="" ng-click="ngScrollTo('redis')">六、配置Redis，实现缓存、NoSql应用</a></li><li><a href="" ng-click="ngScrollTo('js')">七、压缩静态资源，HTML、JS等，提高网站性能及安全</a></li><li><a href="" ng-click="ngScrollTo('session')">八、分布式Session存储，实现负载均衡</a></li><li><a href="" ng-click="ngScrollTo('auth')">九、系统权限的一些思考</a></li><li><a href="" ng-click="ngScrollTo('stat')">十、数据统计方法的一些思考</a></li></ul></div><h3 id="mail">一、配置邮件</h3><p>使用spring-mail来配置邮件，简单好用。</p><p><pre class="prettyprint">
+//1. 增加maven依赖		
+&lt;dependency&gt;
+	&lt;groupId&gt;com.sun.mail&lt;/groupId&gt;
+	&lt;artifactId&gt;javax.mail&lt;/artifactId&gt;
+	&lt;version&gt;1.5.4&lt;/version&gt;
+&lt;/dependency&gt;
+
+//2. 在spring中配置邮件发送Bean
+&lt;bean id="javaMailSenderImpl" class="org.springframework.mail.javamail.JavaMailSenderImpl" scope="singleton"&gt;
+	&lt;property name="host" value="smtp.163.com"&gt;&lt;/property&gt;
+	&lt;property name="port" value="25"&gt;&lt;/property&gt;
+	&lt;property name="username" value="用户名"&gt;&lt;/property&gt;
+	&lt;property name="password" value="密码"&gt;&lt;/property&gt;
+	
+	&lt;property name="javaMailProperties"&gt;
+		&lt;props&gt;
+			&lt;prop key="mail.debug"&gt;false&lt;/prop&gt;
+			&lt;prop key="mail.smtp.auth"&gt;true&lt;/prop&gt;
+			&lt;prop key="mail.smtp.timeout"&gt;300000&lt;/prop&gt;
+			&lt;prop key="mail.smtp.connectiontimeout"&gt;300000&lt;/prop&gt;
+			&lt;prop key="mail.smtp.quitwait"&gt;false&lt;/prop&gt;
+			&lt;prop key="mail.transport.protocol"&gt;smtp&lt;/prop&gt;
+		&lt;/props&gt;
+	&lt;/property&gt;
+&lt;/bean&gt;
+
+//3. 发送邮件
+@Autowired
+private JavaMailSenderImpl javaMailSenderImpl;
+
+/**
+ * 
+ * @param subject 主题
+ * @param context 内容
+ * @param toList 收件人列表
+ * @throws Exception
+ */
+public void sendMail(String subject, String context, List&lt;String&gt; toList) throws Exception {
+	MimeMessage message = javaMailSenderImpl.createMimeMessage();
+	MimeMessageHelper helper = new MimeMessageHelper(message, false, "utf-8");
+	helper.setFrom(mailFrom);
+	String[] toArr = new String[toList.size()];
+	toList.toArray(toArr);
+	helper.setTo(toArr);
+	helper.setSubject(subject);
+	helper.setText(context, true);
+	javaMailSenderImpl.send(message);
+}
+
+//4. 支持：密送、附件等，请自行脑补。
+
+		</pre></p><h3 id="freemaker">二、配置Freemarker，生成静态页面、实现PDF导出</h3><p>Freemarker是一个模板引擎，它有自己的一套标签库，与JST类似(别问我JSTL是啥,我不认识你!)，用它来做什么呢？比如：</p><p>发送复杂格式的邮件，这个时候就不要拼字符串了，那么做就太low了。</p><p>生成静态页面，什么时候需要生成静态页面？为什么要生成静态页面？请自行Google。</p><p>需要在spring-servlet中配置FreemarkViewResolver，同InternalResourceViewResolver类似，InternalResourceViewResolver配置的是常用的JSP等。</p><p><pre class="prettyprint">
+//1. 在applicationContext.xml中配置freemarkerConfig，注意templateLoaderPath别写错。
+&lt;bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer"&gt;
+	&lt;property name="templateLoaderPath" value="/WEB-INF/freemarker/"/&gt;
+	&lt;property name="freemarkerSettings"&gt;
+        &lt;props&gt;
+            &lt;prop key="template_update_delay"&gt;5&lt;/prop&gt;
+            &lt;prop key="default_encoding"&gt;UTF-8&lt;/prop&gt;
+            &lt;prop key="locale"&gt;zh_CN&lt;/prop&gt;
+        &lt;/props&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;
+		
+//2. 在spring-servlet中配置FreemarkViewResolver，注意其中的order值，这个值要小于InternalResourceViewResolver的值。
+&lt;bean id="FreemarkViewResolver"  class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver"&gt;  
+	&lt;property name="viewClass" value="org.springframework.web.servlet.view.freemarker.FreeMarkerView"/&gt;  
+	&lt;property name="cache" value="false"/&gt;  
+	&lt;property name="suffix" value=".tpl" /&gt;  
+	&lt;property name="contentType" value="text/html;charset=UTF-8" /&gt;  
+	&lt;property name="requestContextAttribute" value="request" /&gt;      
+	&lt;property name="exposeRequestAttributes" value="true" /&gt;  
+	&lt;property name="exposeSessionAttributes" value="true" /&gt;      
+	&lt;property name="exposeSpringMacroHelpers" value="true" /&gt; 
+	&lt;property name="order" value="1" /&gt; 
+&lt;/bean&gt;
+
+//3. 新建freemaker模板文件,保存到/WEB-INF/freemarker/demo.tpl，内容简单如下：
+&lt;html&gt;
+	&lt;head&gt;&lt;/head&gt;
+	&lt;body&gt;${hi}&lt;/body&gt;
+&lt;/html&gt;
+
+//4. 调用freemaker
+@RequestMapping(value="freemaker_demo")
+public String demo(HttpServletRequest request, HttpServletResponse resp) throws Exception {
+	request.setAttribute("hi","仙人");
+	return "demo";
+}
+
+//5. 发送邮件时，需要在后台得到模板内容，通过如下方法
+Template t = freemarkerConfig.getConfiguration().getTemplate("demo.tpl");
+Map&lt;String, String&gt; paraMap = Maps.newHashMap();
+paraMap.put("hi", "仙人");
+String content = FreeMarkerTemplateUtils.processTemplateIntoString(t, paraMap);
+
+
+//6. 导出PDF，同样使用freemaker生成内容，然后通过Flying Saucer生成PDF文件
+//要生成漂亮的PDF文件，需要好好研究下CSS，如果有中文，需要自行增加中文字体
+//6.1 增加maven依赖，
+&lt;dependency&gt;
+    &lt;groupId&gt;org.xhtmlrenderer&lt;/groupId&gt;
+    &lt;artifactId&gt;flying-saucer-pdf&lt;/artifactId&gt;
+    &lt;version&gt;9.0.9&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&lt;
+    &lt;groupId&lt;org.xhtmlrenderer&lt;/groupId&lt;
+    &lt;artifactId&lt;flying-saucer-core&lt;/artifactId&lt;
+    &lt;version&lt;9.0.9&lt;/version&lt;
+&lt;/dependency&lt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.xhtmlrenderer&lt;/groupId&gt;
+    &lt;artifactId&gt;flying-saucer-pdf-itext5&lt;/artifactId&gt;
+    &lt;version&gt;9.0.9&lt;/version&gt;
+&lt;/dependency&gt;
+
+//6.2 配置字体，如果PDF内容中有中文，需要自行增加中文字体
+ITextRenderer renderer = new ITextRenderer();
+ITextFontResolver fontResolver = renderer.getFontResolver();
+for (字体 fc : 字体列表) {
+	Resource rs = applicationContext.getResource(字体文件地址);
+	if (rs.exists()) {
+		fontResolver.addFont(rs.getFile().getPath(), "utf-8", isEmbedded);
+	}
+}
+
+//6.3 如果有图片，建议使用如下方式在PDF中插入图片，特殊图片处理类自行脑补下。
+renderer.getSharedContext().setReplacedElementFactory(new 特殊图片处理类(renderer.getSharedContext().getReplacedElementFactory())); 
+
+//6.4 输出PDF内容到流中，可以下载，也可以是文件...
+Map&lt;String, String&gt; paraMap = Maps.newHashMap();
+paraMap.put("hi", "仙人");
+Template t = fconfig.getConfiguration().getTemplate("demo.tpl");
+String s = FreeMarkerTemplateUtils.processTemplateIntoString(t, paraMap);
+renderer.setDocumentFromString(s);
+renderer.layout();
+renderer.createPDF(os, true);
+os.close();
+		</pre></p><h3 id="task">三、定时任务</h3><p>系统中经常用需要增加一些定时任务，实现的方式很多，可以用shell脚本、配置crontab等，不过如果配置在系统中，再增加个定时任务管理页面，增加手动执行等功能，看着是不是帅帅的。</p><p><pre class="prettyprint">
+//1. 增加maven依赖
+&lt;dependency&gt;
+	&lt;groupId&gt;org.quartz-scheduler&lt;/groupId&gt;
+	&lt;artifactId&gt;quartz&lt;/artifactId&gt;
+	&lt;version&gt;2.2.1&lt;/version&gt;
+&lt;/dependency&gt;
+
+//2. 配置定时任务，执行DemoTask.doTask(int n, String t)方法
+&lt;bean id="demoTask" class="com.ac.services.task.DemoTask" scope="singleton"&gt;&lt;/bean&gt;
+&lt;bean id="DemoTasker" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean"&gt;
+ 	 &lt;property name="targetObject"&gt;   
+        &lt;ref bean="demoTask" /&gt;   
+    &lt;/property&gt;   
+     &lt;property name="targetMethod"&gt;
+     	&lt;value&gt;doTask&lt;/value&gt;
+     &lt;/property&gt;
+     &lt;property name="arguments"&gt;
+     	&lt;list&gt;
+     		&lt;value type="java.lang.Integer"&gt;1&lt;/value&gt;
+     		&lt;value type="java.lang.String"&gt;&lt;/value&gt;
+     	&lt;/list&gt;
+     &lt;/property&gt;
+&lt;/bean&gt;
+&lt;bean id="demoTaskTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean"&gt;
+	&lt;property name="description" value="Demo任务"&gt;&lt;/property&gt;
+    &lt;property name="jobDetail" ref="DemoTasker" /&gt;   
+    &lt;property name="cronExpression" value="0 0 1 * * ?" /&gt;   &lt;!-- 凌晨1点执行 --&gt;
+&lt;/bean&gt;
+
+//3. 配置定时任务监听
+&lt;bean id="ACSchedulerListener" class="com.ac.listeners.ACSchedulerListener"&gt;&lt;/bean&gt;
+
+&lt;bean name="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean"&gt;
+	&lt;property name="startupDelay" value="60"&gt;&lt;/property&gt;
+	&lt;property name="globalTriggerListeners"&gt;
+		&lt;list&gt;
+			&lt;ref bean="ACSchedulerListener"/&gt;
+		&lt;/list&gt;
+	&lt;/property&gt;
+	&lt;property name="quartzProperties"&gt;
+		&lt;props&gt;
+			&lt;prop key="org.quartz.scheduler.skipUpdateCheck"&gt;true&lt;/prop&gt;
+			&lt;prop key="org.terracotta.quartz.skipUpdateCheck"&gt;true&lt;/prop&gt;
+		&lt;/props&gt;
+	&lt;/property&gt;
+    &lt;property name="triggers"&gt;   
+        &lt;list&gt;            	
+        	&lt;ref bean="demoTaskTrigger" /&gt;			
+        &lt;/list&gt;   
+    &lt;/property&gt;
+&lt;/bean&gt;
+
+//4. 定时任务监听器，可以通过它还监听定时任务的执行情况
+public class ACSchedulerListener implements TriggerListener {	
+	private Logger logger = Logger.getLogger(getClass());		
+
+	@Override
+	public void triggerFired(Trigger trigger, JobExecutionContext context) {
+		logger.error("任务： " + trigger.getDescription() + " 开始执行...");
+	}
+
+	@Override
+	public boolean vetoJobExecution(Trigger trigger, JobExecutionContext context) {		
+		if(定时任务已经由其它机器执行) {	//是否中断定时任务，当有多服务器时，就需要它了，自己脑补下为啥！
+			logger.error("定时任务已经由其它机器执行!");
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public void triggerMisfired(Trigger trigger) {
+		logger.error("任务： " + trigger.getDescription() + " 没有执行!");
+	}
+
+	@Override
+	public void triggerComplete(Trigger trigger, JobExecutionContext context, CompletedExecutionInstruction triggerInstructionCode) {		
+		logger.error("任务： " + trigger.getDescription() + "[" + jobDetailName + "] 执行完成!");
+	}
+}
+
+//5. 定时任务管理功能，在此，主要是列出当前的定时任务，以及手功执行方式
+//5.1 得到所有定时任务
+public List&lt;Map&lt;String, Object&gt;&gt; getAlltasks() throws Exception {
+	List&lt;Map&lt;String, Object&gt;&gt; taskList = Lists.newArrayList();
+	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	for (String groupName : scheduler.getJobGroupNames()) {
+		for (JobKey jobKey : scheduler.getJobKeys(GroupMatcher.jobGroupEquals(groupName))) {
+			List&lt;Trigger&gt; triggers = (List&lt;Trigger&gt;) scheduler.getTriggersOfJob(jobKey);						
+			for(Trigger tr : triggers) {
+				Map&lt;String, Object&gt; aTask = Maps.newHashMap();
+				aTask.put("groupName", Scheduler.DEFAULT_GROUP);
+				aTask.put("triggerName", tr.getKey().getName());
+				aTask.put("description", tr.getDescription());
+				aTask.put("nextRunTime", df.format(nextFireTime));		
+				taskList.add(aTask);
+			}
+		}
+	}	
+	return taskList;
+}
+
+//5.2 执行指定任务
+@Resource(name="scheduler")
+private StdScheduler scheduler;
+
+public void runTask(String triggerName, Object[] tartgetParam) throws Exception {
+	try {				
+		Trigger trg = getTriggerByName(triggerName);
+		if(trg == null) {
+			return;
+		}
+		
+		String jobName = trg.getJobKey().getName();
+		Object jobObj = MyApplicationContextUtil.getContext().getBean(jobName);
+		JobDetail jobDetail = (JobDetail) jobObj;
+		JobDataMap jobMap = jobDetail.getJobDataMap();
+		Iterator itor = jobMap.keySet().iterator();
+		while(itor.hasNext()) {
+			String key = (String) itor.next();
+			Object obj = jobMap.get(key);
+			MethodInvokingJobDetailFactoryBean factory = (MethodInvokingJobDetailFactoryBean) obj;
+			Object targetObj = factory.getTargetObject();
+			String tartgetMethod = factory.getTargetMethod();
+
+			//TODO 在此执行targetObj的tartgetMethod方法，参数tartgetParam，自己脑补哈。			
+		}		
+	}
+	catch (Exception e) {
+		logger.error(e.getMessage(), e);		
+		throw e;
+	}
+}
+
+private Trigger getTriggerByName(String triggerName) throws Exception {
+	for (String groupName : scheduler.getJobGroupNames()) {
+		for (JobKey jobKey : scheduler.getJobKeys(GroupMatcher.jobGroupEquals(groupName))) {
+			List&lt;Trigger&gt; triggers = (List&lt;Trigger&gt;) scheduler.getTriggersOfJob(jobKey);
+			for(Trigger trigger : triggers) {
+				if(trigger.getKey().getName().equals(triggerName)) {
+					return trigger;
+				}
+			}
+		}
+	}
+	return null;
+}
+		</pre></p><h3 id="SFTPFile">四、读写远程文件</h3><p>系统中会有各式各样的文件需要存储，有系统生成的，有用户上传的，有其它服务传来的，等等；一般都是需要长久存储的，安全要求很高，可不能丢失或者损坏； 存储的方式也很多，有见过存到数据库的、有存到CDN服务上的，这些都不在本节讨论范围内； 本节给出的只是一个最简方案，将文件存到其它服务器上，至于那个服务器如何存储，亦不在本节讨论范围。</p><p>这里介绍一个集成spring的sftp服务，使用方式如下：</p><p><pre class="prettyprint">
+//1. 引入maven依赖
+&lt;dependency&gt;
+	&lt;groupId&gt;org.springframework.integration&lt;/groupId&gt;
+	&lt;artifactId&gt;spring-integration-sftp&lt;/artifactId&gt;
+	&lt;version&gt;4.1.5.RELEASE&lt;/version&gt;
+&lt;/dependency&gt;
+
+//2. 配置sftpSessionFactory
+&lt;beans:bean id="sftpSessionFactory" class="org.springframework.integration.sftp.session.DefaultSftpSessionFactory"&gt;
+	&lt;beans:property name="host" value="xxx.xxx.xxx.xxx"/&gt;    
+	&lt;beans:property name="port" value="port"/&gt;
+	&lt;beans:property name="user" value="username"/&gt;    
+	&lt;beans:property name="password" value="password"&gt;&lt;/beans:property&gt;
+&lt;/beans:bean&gt;
+
+//3. 使用用户名密码似乎不太安全，可以使用ssh key来认证登录
+&lt;beans:bean id="sftpSessionFactory" class="org.springframework.integration.sftp.session.DefaultSftpSessionFactory"&gt;
+	&lt;beans:property name="host" value="xxx.xxx.xxx.xxx"/&gt;   
+	&lt;beans:property name="port" value="port"/&gt;
+	&lt;beans:property name="user" value="username"/&gt;    
+	&lt;beans:property name="privateKeyPassphrase" value="privateKeyPassphrase"/&gt;
+	&lt;beans:property name="privateKey" value="classpath:sftpkey"/&gt;
+&lt;/beans:bean&gt;		
+
+//4. ssh key的生成与使用，脑补时间！
+
+//5. 使用方式
+@Resource(name="sftpSessionFactory")
+private DefaultSftpSessionFactory factory;
+
+//上传文件instream到远程目录/opt/ac/hi.txt下
+SftpSession session = factory.getSession();
+ChannelSftp channelSftp = session.getClientInstance();
+channelSftp.put(instream, '/opt/ac/hi.txt');
+channelSftp.disconnect();
+session.close();
+
+//其它的文件操作还有很多，自行看下API即可，在此不做过多描述。
+//特别强调一定要执行channelSftp.disconnect();和session.close();
+//如果不执行，那你就等着文件服务器内存溢出吧
+
+		</pre></p><h3 id="excel">五、超大excel报表导出</h3><p>相信不少同学都做过报表导出到excel，一般用的都是POI，如果需要导出的文件不到1W行，那请直接跳过本节，本节讨论10W+行数excel导出；POI 3.10以后的版本性能还不错，不过大家应该发现这么个现象：</p><p>导出的时候，点了导出按钮，导出页面也打开了，可是要等大半天才会跳出下载保存的对话框，这个时间等得让人心烦，也不知道下载的情况如何，是否卡住了，还能不能导出了，如果这个时间过长，呵呵，可能会出现超时错误； 但是上网下载个东西的时候，浏览器会提示你下载的速度、进度等；那导出excel能做成那样吗？ 能不能让我点完下载按钮，立刻就跳出下载对话框，不要那个漫长的等待过程，下载过程中也有一个速度和进度的提示？答案是可以的，本节将给你介绍一个帅帅的导出方式。</p><p><pre class="prettyprint">
+//1. 引入maven依赖
+&lt;dependency&gt;
+    &lt;groupId&gt;org.apache.poi&lt;/groupId&gt;
+    &lt;artifactId&gt;poi&lt;/artifactId&gt;
+    &lt;version&gt;3.10.1&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.apache.poi&lt;/groupId&gt;
+    &lt;artifactId&gt;poi-ooxml&lt;/artifactId&gt;
+    &lt;version&gt;3.10.1&lt;/version&gt;
+&lt;/dependency&gt;
+
+//2. 普通的导出excel过程
+Workbook wb = new SXSSFWorkbook(60000);//创建workbook
+.... ... //给workbook中写入数据
+response.setContentType("application/vnd.ms-excel;charset=UTF-8");
+wb.write(response.getOutputStream());//将workbook写到servlet流中
+response.getOutputStream().flush();
+response.getOutputStream().close();		
+//问题就出在那个将数据写到workbook的漫长过程
+
+//3. 帅帅的导出实现
+//3.1 生成一个空文件，并写到一个临时目录下，临时文件名最好带上唯一标记，比如时间、sessionId什么的，注意导完要及时删除掉。
+XSSFWorkbook wb = new XSSFWorkbook();
+XSSFSheet sheet = wb.createSheet("Big Grid");
+Map&lt;String, XSSFCellStyle&gt; styles = createStyles(wb);
+String sheetRef = sheet.getPackagePart().getPartName().getName();
+FileOutputStream os = new FileOutputStream("/opt/temp/sessionId_template.xlsx");
+wb.write(os);
+os.close();
+
+//3.2 打开servlet流，设置属性，准备写数据
+esponse.setHeader("Content-Disposition", "attachment;filename=big-grid.xlsx");
+response.setHeader("Pragma", "public");
+response.setHeader("Cache-Control", "no-cache");
+response.setDateHeader("Expires", 0);
+response.setContentType("application/vnd.ms-excel;charset=UTF-8");
+OutputStream out = response.getOutputStream();
+
+//3.3 将临时文件压缩到输出流中，并在过程中写入报表数据
+File zipfile = new File("/opt/temp/sessionId_template.xlsx");
+ZipFile zip = ZipHelper.openZipFile(zipfile);
+try {
+    ZipOutputStream zos = new ZipOutputStream(out);
+    Enumeration&lt;? extends ZipEntry&gt; en = zip.entries();
+    while (en.hasMoreElements()) {
+        ZipEntry ze = en.nextElement();
+        if(!ze.getName().equals(sheetRef)){
+            zos.putNextEntry(new ZipEntry(ze.getName()));
+            InputStream is = zip.getInputStream(ze);
+            copyStream(is, zos);
+            is.close();
+        }
+    }
+    
+    zos.putNextEntry(new ZipEntry(sheetRef));
+    
+    Writer fw = new OutputStreamWriter(zos, XML_ENCODING);
+    generate(fw, styles);//生成数据，此处需要是xml格式的excel内容
+    fw.close();
+
+    zos.close();
+} finally {
+    zip.close();
+}
+</pre><pre class="prettyprint">
+//3.4 主要的核心内容就是如上三点，详细示例如下，请按具体情况做相关调整，其实这个类是apache官网的一个例子，我只是稍做了下改动：
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.Calendar;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.poi.openxml4j.opc.internal.ZipHelper;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.util.CellReference;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFDataFormat;
+import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+@RequestMapping(value="/BigExcelExpCtrl/")
+public class BigExcelExpCtrl {
+	
+	private static final String XML_ENCODING = "UTF-8";
+
+	@RequestMapping(value="demo")
+	public void demo(HttpServletResponse response) throws Exception {		
+		// Step 1. Create a template file. Setup sheets and workbook-level objects such as
+		// cell styles, number formats, etc.
+		XSSFWorkbook wb = new XSSFWorkbook();
+		XSSFSheet sheet = wb.createSheet("Big Grid");
+
+		Map&lt;String, XSSFCellStyle&gt; styles = createStyles(wb);
+		//name of the zip entry holding sheet data, e.g. /xl/worksheets/sheet1.xml
+		String sheetRef = sheet.getPackagePart().getPartName().getName();
+
+		//save the template
+		FileOutputStream os = new FileOutputStream("D:\\template.xlsx");
+		wb.write(os);
+		os.close();        
+
+		//Step 3. Substitute the template entry with the generated data
+		//FileOutputStream out = new FileOutputStream("big-grid.xlsx");
+        
+		response.setHeader("Content-Disposition", "attachment;filename=big-grid.xlsx");
+		response.setHeader("Pragma", "public");
+		response.setHeader("Cache-Control", "no-cache");
+		response.setDateHeader("Expires", 0);
+		response.setContentType("application/vnd.ms-excel" + ";charset=UTF-8");
+		
+		OutputStream out = response.getOutputStream();
+        
+		//Step 2. Generate XML file.        
+		substitute(new File("D:\\template.xlsx"), styles, sheetRef.substring(1), out);        
+        
+		out.close();
+		out.flush();
+	}
+	
+    /**
+     *
+     * @param zipfile the template file
+     * @param tmpfile the XML file with the sheet data
+     * @param entry the name of the sheet entry to substitute, e.g. xl/worksheets/sheet1.xml
+     * @param out the stream to write the result to
+     */
+    private static void substitute(File zipfile, Map&lt;String, XSSFCellStyle&gt; styles, String entry, OutputStream out) throws Exception {
+        ZipFile zip = ZipHelper.openZipFile(zipfile);
+        try {
+            ZipOutputStream zos = new ZipOutputStream(out);
+    
+            Enumeration&lt;? extends ZipEntry&gt; en = zip.entries();
+            while (en.hasMoreElements()) {
+                ZipEntry ze = en.nextElement();
+                if(!ze.getName().equals(entry)){
+                    zos.putNextEntry(new ZipEntry(ze.getName()));
+                    InputStream is = zip.getInputStream(ze);
+                    copyStream(is, zos);
+                    is.close();
+                }
+            }
+            
+            zos.putNextEntry(new ZipEntry(entry));
+            
+            Writer fw = new OutputStreamWriter(zos, XML_ENCODING);
+            generate(fw, styles);
+            fw.close();
+    
+            zos.close();
+        } finally {
+            zip.close();
+        }
+    }
+    
+    private static void generate(Writer out, Map&lt;String, XSSFCellStyle&gt; styles) throws Exception {
+        Random rnd = new Random();
+        Calendar calendar = Calendar.getInstance();
+
+        SpreadsheetWriter sw = new SpreadsheetWriter(out);
+        sw.beginSheet();
+
+        //insert header row
+        sw.insertRow(0);
+        int styleIndex = styles.get("header").getIndex();
+        sw.createCell(0, "Title", styleIndex);
+        sw.createCell(1, "% Change", styleIndex);
+        sw.createCell(2, "Ratio", styleIndex);
+        sw.createCell(3, "Expenses", styleIndex);
+        sw.createCell(4, "Date", styleIndex);
+
+        sw.endRow();
+
+        //write data rows
+        for (int rownum = 1; rownum &lt; 150000; rownum++) {
+        	
+        	if(rownum % 1000 == 0) {
+        		System.out.println(rownum);
+        		Thread.sleep(2000);//用于模拟数据查询
+        	}
+        	
+            sw.insertRow(rownum);
+
+            sw.createCell(0, "Hello, " + rownum + "!");
+            sw.createCell(1, (double)rnd.nextInt(100)/100, styles.get("percent").getIndex());
+            sw.createCell(2, (double)rnd.nextInt(10)/10, styles.get("coeff").getIndex());
+            sw.createCell(3, rnd.nextInt(10000), styles.get("currency").getIndex());
+            sw.createCell(4, calendar, styles.get("date").getIndex());
+
+            sw.endRow();
+
+            calendar.roll(Calendar.DAY_OF_YEAR, 1);
+        }
+        sw.endSheet();
+    }
+    
+    private static void copyStream(InputStream in, OutputStream out) throws IOException {
+        byte[] chunk = new byte[1024];
+        int count;
+        while ((count = in.read(chunk)) &gt;=0 ) {
+          out.write(chunk,0,count);
+        }
+    }
+    
+    /**
+     * Create a library of cell styles.
+     */
+    private static Map&lt;String, XSSFCellStyle&gt; createStyles(XSSFWorkbook wb){
+        Map&lt;String, XSSFCellStyle&gt; styles = new HashMap&lt;String, XSSFCellStyle&gt;();
+        XSSFDataFormat fmt = wb.createDataFormat();
+
+        XSSFCellStyle style1 = wb.createCellStyle();
+        style1.setAlignment(HorizontalAlignment.RIGHT);
+        style1.setDataFormat(fmt.getFormat("0.0%"));
+        styles.put("percent", style1);
+
+        XSSFCellStyle style2 = wb.createCellStyle();
+        style2.setAlignment(HorizontalAlignment.CENTER);
+        style2.setDataFormat(fmt.getFormat("0.0X"));
+        styles.put("coeff", style2);
+
+        XSSFCellStyle style3 = wb.createCellStyle();
+        style3.setAlignment(HorizontalAlignment.RIGHT);
+        style3.setDataFormat(fmt.getFormat("$#,##0.00"));
+        styles.put("currency", style3);
+
+        XSSFCellStyle style4 = wb.createCellStyle();
+        style4.setAlignment(HorizontalAlignment.RIGHT);
+        style4.setDataFormat(fmt.getFormat("mmm dd"));
+        styles.put("date", style4);
+
+        XSSFCellStyle style5 = wb.createCellStyle();
+        XSSFFont headerFont = wb.createFont();
+        headerFont.setBold(true);
+        style5.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+        style5.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        style5.setFont(headerFont);
+        styles.put("header", style5);
+
+        return styles;
+    }
+
+    /**
+     * Writes spreadsheet data in a Writer.
+     * (YK: in future it may evolve in a full-featured API for streaming data in Excel)
+     */
+    public static class SpreadsheetWriter {
+        private final Writer _out;
+        private int _rownum;
+
+        public SpreadsheetWriter(Writer out){
+            _out = out;
+        }
+
+        public void beginSheet() throws IOException {
+            _out.write("&lt;?xml version=\"1.0\" encoding=\""+XML_ENCODING+"\"?&gt;" +
+                    "&lt;worksheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"&gt;" );
+            _out.write("&lt;sheetData&gt;\n");
+        }
+
+        public void endSheet() throws IOException {
+            _out.write("&lt;/sheetData&gt;");
+            _out.write("&lt;/worksheet&gt;");
+        }
+
+        /**
+         * Insert a new row
+         *
+         * @param rownum 0-based row number
+         */
+        public void insertRow(int rownum) throws IOException {
+            _out.write("&lt;row r=\""+(rownum+1)+"\"&gt;\n");
+            this._rownum = rownum;
+        }
+
+        /**
+         * Insert row end marker
+         */
+        public void endRow() throws IOException {
+            _out.write("&lt;/row&gt;\n");
+        }
+
+        public void createCell(int columnIndex, String value, int styleIndex) throws IOException {
+            String ref = new CellReference(_rownum, columnIndex).formatAsString();
+            _out.write("&lt;c r=\""+ref+"\" t=\"inlineStr\"");
+            if(styleIndex != -1) _out.write(" s=\""+styleIndex+"\"");
+            _out.write("&gt;");
+            _out.write("&lt;is&gt;&lt;t&gt;"+value+"&lt;/t&gt;&lt;/is&gt;");
+            _out.write("&lt;/c&gt;");
+        }
+
+        public void createCell(int columnIndex, String value) throws IOException {
+            createCell(columnIndex, value, -1);
+        }
+
+        public void createCell(int columnIndex, double value, int styleIndex) throws IOException {
+            String ref = new CellReference(_rownum, columnIndex).formatAsString();
+            _out.write("&lt;c r=\""+ref+"\" t=\"n\"");
+            if(styleIndex != -1) _out.write(" s=\""+styleIndex+"\"");
+            _out.write("&gt;");
+            _out.write("&lt;v&gt;"+value+"&lt;/v&gt;");
+            _out.write("&lt;/c&gt;");
+        }
+
+        public void createCell(int columnIndex, double value) throws IOException {
+            createCell(columnIndex, value, -1);
+        }
+
+        public void createCell(int columnIndex, Calendar value, int styleIndex) throws IOException {
+            createCell(columnIndex, DateUtil.getExcelDate(value, false), styleIndex);
+        }
+    }
+}
+		</pre></p><h3 id="redis">六、配置Redis，实现缓存、NoSql应用</h3><p>系统遇到性能瓶颈、并发压力等，最直接有效的解决方法就是使用缓存，将从数据库查询数据的过程，改到查询缓存，性能很快就能有质的提升，本节将介绍使用spring-redis来实现缓存应用。</p><p>哪些数据需要缓存？缓存结构怎样设计？这个需要根据实际情况而定，不可生般硬套。</p><p><pre class="prettyprint">
+//1. 增加maven依赖
+&lt;dependency&gt;
+	&lt;groupId&gt;org.springframework.data&lt;/groupId&gt;
+	&lt;artifactId&gt;spring-data-redis&lt;/artifactId&gt;
+	&lt;version&gt;1.7.1.RELEASE&lt;/version&gt;
+&lt;/dependency&gt;
+
+//2. 在spring中配置JedisConnectionFactory
+//2.1 配置连接池
+&lt;bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig"&gt;
+	&lt;property name="minIdle" value="10"&gt;&lt;/property&gt;
+	&lt;property name="maxIdle" value="10"&gt;&lt;/property&gt;
+	&lt;property name="maxTotal" value="30"&gt;&lt;/property&gt;
+&lt;/bean&gt;
+
+//2.2 普通配置，直接使用IP和密码
+&lt;bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"&gt;
+	&lt;property name="hostName" value="127.0.0.1"&gt;&lt;/property&gt;
+	&lt;property name="port" value="6379"&gt;&lt;/property&gt;
+	&lt;property name="usePool" value="true"&gt;&lt;/property&gt;
+	&lt;constructor-arg name="poolConfig" ref="jedisPoolConfig"/&gt;
+&lt;/bean&gt;
+
+//2.3 JedisConnectionFactory也可以通过RedisSentinelConfiguration来配置，方式如下:
+&lt;bean id="redisSentinelConfiguration" class="org.springframework.data.redis.connection.RedisSentinelConfiguration"&gt;
+	&lt;property name="master"&gt;
+		&lt;bean class="org.springframework.data.redis.connection.RedisNode"&gt;
+			&lt;property name="name" value="node_name"&gt;&lt;/property&gt;
+		&lt;/bean&gt;
+	&lt;/property&gt;
+	&lt;property name="sentinels"&gt;
+		&lt;set&gt;
+			&lt;bean class="org.springframework.data.redis.connection.RedisNode"&gt;
+				&lt;constructor-arg name="host" value="sentinel_A_IP" /&gt;
+				&lt;constructor-arg name="port" value="sentinel_A_port" /&gt;
+			&lt;/bean&gt;
+			&lt;bean class="org.springframework.data.redis.connection.RedisNode"&gt;
+				&lt;constructor-arg name="host" value="sentinel_B_IP" /&gt;
+				&lt;constructor-arg name="port" value="sentinel_B_port" /&gt;
+			&lt;/bean&gt;
+			... ...
+		&lt;/set&gt;
+	&lt;/property&gt;
+&lt;/bean&gt;	
+&lt;bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"&gt;
+	&lt;constructor-arg name="sentinelConfig" ref="redisSentinelConfiguration" /&gt;
+	&lt;constructor-arg name="poolConfig" ref="jedisPoolConfig"/&gt;
+&lt;/bean&gt;
+
+//3. 配置spring-redis模板，一般情况配置两种就可以，StringRedisTemplate和ObjectRedisTemplate。
+@Component
+public class RedisTempalteConfig {
+	
+	@Resource(name="jedisConnectionFactory")
+	private JedisConnectionFactory jedisConnectionFactory;
+	
+	//3.1 StringRedisTemplate，也就是用于操作string数据类型的，这也是最常用的，配置如下：
+	@Bean
+	StringRedisTemplate stringRedisTemplate() {
+		final StringRedisTemplate template = new StringRedisTemplate(jedisConnectionFactory);
+		template.afterPropertiesSet();
+		return template;
+	}
+	
+	@Bean(name="redisOpsString")
+	ValueOperations&lt;String, String&gt; redisOpsString() {
+		final StringRedisTemplate template = stringRedisTemplate();
+		return template.opsForValue();
+	}
+	
+	//3.2 ObjectRedisTemplate，可以用于任意数据类型的redis操作
+	@Bean
+	RedisTemplate&lt;String, Object&gt; redisTemplateObject() {
+	    final RedisTemplate&lt;String, Object&gt; template = new RedisTemplate&lt;String, Object&gt;();
+	    template.setConnectionFactory(jedisConnectionFactory);
+	    template.setKeySerializer(new StringRedisSerializer());
+	    template.setHashKeySerializer(new StringRedisSerializer());
+	    template.setHashValueSerializer(new JdkSerializationRedisSerializer());
+	    template.setValueSerializer(new JdkSerializationRedisSerializer());
+	    template.afterPropertiesSet();
+	    return template;
+	}
+	
+	@Bean(name = "redisOpsObject")
+	ValueOperations&lt;String, Object&gt; redisOpsObject() {
+		final RedisTemplate&lt;String, Object&gt; tp = redisTemplateObject();
+		ValueOperations&lt;String, Object&gt; vo = tp.opsForValue();
+		return vo;
+	}	
+}
+
+//4. 配置完成后就可以使用了，所有redis的操作基本都能覆盖，如下示例：
+@Autowired
+private StringRedisTemplate redisStringTpl;
+
+@Resource(name="redisOpsString")
+ValueOperations&lt;String, String&gt; redisOpsString;
+
+public void demo() throws Exception {
+
+	redisOpsString.set("hi", "仙人");//写入hi
+
+	redisStringTpl.delete("hi");//删除hi
+	redisStringTpl.delete(redisStringTpl.keys("hi_*"));//删除所有hi_开头KEY
+
+	//set操作
+	BoundSetOperations&lt;String, String&gt; setOps = redisStringTpl.boundSetOps("hi_set");
+	setOps.add("1");
+	setOps.add("2");
+	setOps.add("3");
+	Set&lt;String&gt; setKeys = setOps.members();
+
+	//其它redis类型
+	BoundListOperations&lt;String, String&gt; opsList = redisStringTpl.boundListOps("hi_list");			
+	BoundHashOperations&lt;String, String, String&gt; hashOps = redisStringTpl.boundHashOps("hi_hash");
+	BoundZSetOperations&lt;String, String&gt; zsetOps = redisStringTpl.boundZSetOps("hi_zset");
+
+	//redisOpsObject及其它的请自行脑补
+}
+		
+		</pre></p><h3 id="js">七、压缩静态资源，HTML、JS等，提高网站性能及安全</h3><p>相信大家多少都会用一些浏览器的代码调试工具，常用的比如chrome开发者工具、firefox的firebug、IE的开发者工具等，通过这些工具你能很方便的查看网站的JS及html等资源； 如果我们直接把开发代码用于生产环境，那么别人通过这些工具很轻松的就能读懂你的代码，前端的业务逻辑也就完全暴露出来； 开发环境的代码基本都未经压缩处理的，代码体积较大，而且大多都会根据不同功能放到不同的文件中，从网站性能上来说，页面加载的资源大小、请求次数，都会严重影响性能； 这些都是大家不愿意看到的。</p><p>提到压缩，很多同学一听觉得很有难度，其实是很简单的，不必谈虎色变。</p><p>压缩方式实在太多，本节只介绍一种AC使用的压缩方式，未必是最适合你的，仅供参考。</p><p>另外，建议你不要通过前端来完成复杂的业务逻辑，业务逻辑应尽可能的在后端完成，前端只负责展示数据及一些必要的动画。</p><p><pre class="prettyprint">
+//通过gulp来完成压缩，gulp中文网如下:http://www.gulpjs.com.cn/，上面详细的介绍了使用说明
+//1. 安装nodejs
+//2. 安装gulp
+npm install --global gulp
+
+//由于不同的网站结构，压缩脚本会有不同，在此只介绍AC生成的bootstrap和material两位目录结构的脚本
+//ExtJS的压缩方式会在后期上线的ExtJS6中介绍
+//bootstrap、material的前端代码目录有如下四个：
+src/main/webapp/WEB-INF/ctrl
+src/main/webapp/WEB-INF/views //(刚发现AC中的views和templates放一起了，建议大家拆开啊，views用于存放jsp，templates用于存放ng的模板，后期AC会调整过来)
+src/main/webapp/WEB-INF/templates
+src/main/webapp/WEB-INF/app
+src/main/webapp/WEB-INF/directive
+
+//3. 新建目录，该目录将保存压缩后的代码，你可以指定到其它的地方，比如一个专门用于生产环境的代码目录。
+src/main/webapp/WEB-INF/dist
+
+//4. 新建gulp目录，该目录用于存放gulp脚本，当然，你可以放到别的地方。
+src/main/webapp/WEB-INF/gulp
+
+//5. 建立gulp脚本,src/main/webapp/WEB-INF/gulp/gulpfile.js
+cd src/main/webapp/WEB-INF/gulp/
+npm install gulp
+
+//6. gulpfile.js示例如下，请根据实际情况进行相关调整：（大家注意把views中的模板移到templates中）
+var gulp = require("gulp");
+var gutil = require('gulp-util');
+var plumber = require( 'gulp-plumber' );
+var rename = require('gulp-rename');
+var uglify = require('gulp-uglify');
+var htmlmin = require('gulp-html-minifier');
+var cssmin = require('gulp-cssmin');
+var fs = require("fs");
+var series = require('stream-series');
+var rmdir = require('rmdir');
+var ngAnnotate = require('gulp-ng-annotate');
+
+function buildJsFile(srcFiles, dest) {
+	rmdir(dest, function(err, dirs, files) {
+		var buildStream = gulp.src(srcFiles)
+			.pipe(plumber())
+			.pipe(ngAnnotate());
+		
+		var process = series(buildStream)		
+		.pipe(uglify({ 
+			preserveComments: 'some',
+			mangle: {
+				except: ["define","require","module","exports"]
+			}
+		}))
+		.pipe(rename({ extname: '.js' }))
+		.pipe(gulp.dest(dest));
+	});
+}
+
+function buildJs() {
+	gutil.log("building js files...");
+	
+	buildJsFile('../ctrl/**/*.js', '../dist/ctrl/');
+	buildJsFile('../directive/**/*.js', '../dist/directive/');
+	buildJsFile('../filter/**/*.js', '../dist/filter/');
+}
+
+function buildCss() {
+	var files = ['../directive/**/*.css'];
+	gutil.log("building css files...");
+	
+	var buildStream = gulp.src(files)
+	.pipe(plumber())
+	.pipe(cssmin())
+	.pipe(rename({ extname: '.css' }))
+	.pipe(gulp.dest('../dist/directive/'));
+}
+
+function buildHtml() {
+	var srcFiles = ['../templates/**/*.html'];
+	gutil.log("building html files...");
+	
+	rmdir('../dist/templates/',function(err, dirs, files) {
+		var options = {
+	        removeComments: true,//清除HTML注释
+	        collapseWhitespace: true,//压缩HTML
+	        collapseBooleanAttributes: true,//省略布尔属性的值 
+	        removeEmptyAttributes: true,//删除所有空格作属性值 
+	        removeScriptTypeAttributes: true,//删除&lt;script&gt;的type="text/javascript"
+	        removeStyleLinkTypeAttributes: true,//删除&lt;style&gt;和&lt;link&gt;的type="text/css"
+	        minifyJS: true,//压缩页面JS
+	        minifyCSS: true//压缩页面CSS
+	    };
+		
+		var buildStream = gulp.src(srcFiles)
+		.pipe(plumber());
+		
+		var process = series(buildStream)		
+		.pipe(htmlmin(options))
+		.pipe(rename({ extname: '.html' }))
+		.pipe(gulp.dest('../dist/templates/'));
+	});
+}
+
+gulp.task('default', function() {
+	buildJs();
+	buildCss();
+	buildHtml();
+})
+
+//7. 执行gulp后，代码都会被压缩到dist文件夹中，上面的代码没有进行合并文件，如何合并文件呢？请自行脑补啊！
+
+//8. 最后一步，将srping静态资源请求转到dist目录中
+//修改spring-servlet.xml中的resources mapping地址即可，改为如下:
+&lt;resources mapping="/ctrl/**" location="/WEB-INF/dist/ctrl/" /&gt;
+&lt;resources mapping="/templates/**" location="/WEB-INF/dist/templates/" /&gt;
+&lt;resources mapping="/directive/**" location="/WEB-INF/dist/directive/" /&gt;
+&lt;resources mapping="/filter/**" location="/WEB-INF/dist/filter/" /&gt;
+
+		</pre></p><h3 id="session">八、分布式Session存储，实现负载均衡</h3><p>一个安全的线上环境，是不应该有单点服务的，每个服务都应该有多台机器提供服务，如果一台坏了，还有其它的能提供服务；包括应用服务器、数据库、redis、文件服务器等。</p><p>负载均衡中的一个关键点就是对于服务来说是请求是无状态的，只纯提供服务，无论请求最终访问到哪台机器，都应该被认为是同一个用户，都能提供对应的服务； 有些负载策略会保证每次用户请求到的是同一台机器，而请求状态信息都会存在这一台机器上，如果是这种负载策略，那可以跳过本节。负载均衡的实现方式很多，有软件有硬件，亦不在本节讨论范围内。</p><p>当你的服务部署到多台机器上以后，会遇到一个问题，用户的session存储到哪？如果存到A机器，那用户下一个请求到B服务器时，session就没有了； 从而需要一种存储session的方式，让机器A和机器B都能读写，且保持一致。</p><p>本节将提供一种Session的存储方式，使用这种方式，你可以方便的将你的服务部署到多台机器上，再给这些机器做负载均衡，不用关心session共享的问题。</p><p><pre class="prettyprint">
+//使用spring-session实现session共享，需要配置好（六）中的redis，session将会被存储到redis中。
+//1. 引入maven依赖
+&lt;dependency&gt;
+	&lt;groupId&gt;org.springframework.session&lt;/groupId&gt;
+	&lt;artifactId&gt;spring-session&lt;/artifactId&gt;
+	&lt;version&gt;1.2.0.RELEASE&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+	&lt;groupId&gt;org.springframework.session&lt;/groupId&gt;
+	&lt;artifactId&gt;spring-session-data-redis&lt;/artifactId&gt;
+	&lt;version&gt;1.2.0.RELEASE&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+	&lt;groupId&gt;org.springframework.data&lt;/groupId&gt;
+	&lt;artifactId&gt;spring-data-redis&lt;/artifactId&gt;
+	&lt;version&gt;1.7.1.RELEASE&lt;/version&gt;
+&lt;/dependency&gt;
+
+//2. 在web.xml中配置spring session
+ &lt;filter&gt;
+	&lt;filter-name&gt;springSessionRepositoryFilter&lt;/filter-name&gt;
+	&lt;filter-class&gt;org.springframework.web.filter.DelegatingFilterProxy&lt;/filter-class&gt;
+&lt;/filter&gt;
+&lt;filter-mapping&gt;
+	&lt;filter-name&gt;springSessionRepositoryFilter&lt;/filter-name&gt;
+	&lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+&lt;/filter-mapping&gt;
+
+//3. redis session配置
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
+import org.springframework.stereotype.Component;
+
+@Component
+@EnableRedisHttpSession(redisNamespace="ac_sys", maxInactiveIntervalInSeconds=4 * 60 * 60)
+public class RedisHttpSessionConfig {
+}
+
+//4. 加上如上配置后，你就能在redis中看到session信息，上面的配置中加上了redisNamespace，session有效时间为4小时。
+
+		</pre></p><h3 id="auth">九、系统权限问题的一些思考</h3><p>权限问题由来以久，各家各有各家的观点，在此只是一点个人的看法，以供消遣。</p><p>权限，就是说某些资源/数据一些人能访问到，另一些人访问不到。说的是很简单，但是不同场景，不同业务，不能一概而论。 权限大概分为两类：数据权限(返回的数据内容不同)、访问权限(如页面、请求，能不能访问)； 系统中最关键的就是数据，数据泄漏往往影响都极大，会让用户失去对你的信任；个人认为信任是人与人之间最关键的东西，没有信任，就不可能有其它美好的故事发生； 领导用人也是如此，也许此人无才无德，但一样得到重用，为何，信任他罢了，本节以闲话为主，算是吐吐糟吧。</p><p>数据权限，这需要根据不同场景定义出不同的权限，可能是组织结构(部门、机构)、信息类型、业务分组等等。 如果是业务系统，可能需要在数据库查询中加上权限SQL，如果使用mybatis，这个是很好实现的，在此不做多说。 如果是并发较高的系统，不同权限一般都会存放不同的缓存数据。 有可能的话需要增加安全监控机制，对于用户请求的IP规律、访问频率、地域规律、时间规律、消费范围规律等来综合考量，确保用户及数据安全！ 嗯，没有隐私可言了，主要是一个度的问题，不要太过了就可以；也提醒大家，上网该用隐私模式就用隐私模式。</p><p>访问权限，对于不同用户，资源是否开放访问，也是个常见的问题。实现方式也很多，相信看到这的同学基本都能解决这个问题; 不过提醒大家要在后台增加拦截，不要认为不让用户看到这个资源(请求地址)，就算安全了，要做到即便他看到这个地址，后台也会拒绝他的访问请求， 可以通过配置拦截器实现，注意增加缓存以保证性能。</p><h3 id="stat">十、数据统计方法的一些思考</h3><p>眼下大数据盛行，数据统计也尤为重要，开源工具方法也很多，hadoop、hive、Kafka、Storm、Druid、Impala等等，发展异常迅速，使得统计日趁简单， 给我们带来极大的方便。</p><p>本节不会讨论这些开源框架的好坏，万物皆有阴阳，存在即有合理性，大家根据自己的情况选择使用就可以了。</p><p>上述的工具基本能完成所有的统计任务，但是有时也会需要一些特殊的统计报表，需要进行二次统计，那可有统计思想、方法稍加指引，使得我们的统计变得简单、有条理呢？</p><p>个人认为，统计的核心思想是：分类汇总！</p><p>分类，拿到数据后，根据统计需求，对数据按各维度进行分类，这是统计的前提，也是需求的导向。</p><p>汇总，分类完成后，根据需求进行汇总，加、减、乘、除、等等，最终得到统计结果。</p><p>大家在统计数据时，试用此方法，以不变应万变。</p><br><br><hr style="height:1px;border:none;border-top:1px dashed #06C"><p>最近工作较忙，AC这边更新较少，还请大家见谅。今天是国庆第一天，在家关了一整天，整理成这篇文章，如有问题，请联系我们！</p><p>写得好与不好，请大家都不要转发，给AC多留一点特色！后期AC会增加一些新的功能，比如：ExtJS 6、上传笔记等，这两个争取在年前搞定！</p><p>如果你有什么好的意见和建议，请联系我们！</p><p layout="row"><span flex></span> 无我仙人 @ 2016-10-01 23:10 <span flex></span></p></article>

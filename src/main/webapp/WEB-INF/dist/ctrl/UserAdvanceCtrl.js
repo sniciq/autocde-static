@@ -1,0 +1,1 @@
+angular.module("myApp").controller("UserAdvanceCtrl",["$rootScope","$scope","$location","$routeParams","$http","$anchorScroll",function(o,r,t,n,c,l){prettyPrint(),r.ngScrollTo=function(o){l.yOffset=50,l(o)}}]);

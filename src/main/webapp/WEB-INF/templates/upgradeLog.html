@@ -1,0 +1,326 @@
+<md-dialog aria-label="升级日志" ng-class="{'md-dialog-fullscreen-lg': !$root.customFullscreen}">
+	<md-toolbar>
+	    <div class="md-toolbar-tools">
+	      <h2>升级日志</h2>
+	      <span flex></span>
+	      <md-button class="md-icon-button" ng-click="cancel()">
+			<i class="material-icons">close</i>
+	      </md-button>
+	    </div>
+	</md-toolbar>
+	<md-dialog-content layout-padding >
+        <md-card>
+            <md-card-title>
+                <md-card-title-text>
+                    <span class="md-headline">2018-11-04 00:00</span>
+                </md-card-title-text>
+            </md-card-title>
+            <md-card-content>
+                <p>优化Mybatis ID列强制使用bigint，对应long类型</p>
+                <p>优化angular结构，将js和html放在一个目录下，方便开发</p>
+                <p>优化JsonResult，使用更加精简的泛型</p>
+                <p>优化数据库实体对象，不再继承分页对象，分页对象单独设置</p>
+            </md-card-content>
+        </md-card>
+        <md-card>
+            <md-card-title>
+                <md-card-title-text>
+                    <span class="md-headline">2018-06-26 00:08</span>
+                </md-card-title-text>
+            </md-card-title>
+            <md-card-content>
+                <p>优化：Mybatis SQL改用&lt;where&gt;、&lt;set&gt;，原来的set id=#{id}的方式在并发量大时会产生锁表。</p>
+                <p>优化：bootstrap样式，在多行查询条件中增加间隔。</p>
+                <p>BUG修复: 通过链接地址导入数据库时会有异常的问题。</p>
+            </md-card-content>
+        </md-card>
+		<md-card>
+			<md-card-title>
+				<md-card-title-text>
+					<span class="md-headline">2017-08-20</span>
+				</md-card-title-text>
+			</md-card-title>
+			<md-card-content>
+				<p>优化：Bootstrap样式优化，滚动条改到内部，解决关闭对话框后的闪动问题。</p>
+				<p>BUG修复: mysql为char类型时生成代码错误。</p>
+				<p>其它: 增加打赏页面，您要是觉得对您有帮助，请打赏AC。</p>
+			</md-card-content>
+		</md-card>
+		<md-card>
+			<md-card-title>
+				<md-card-title-text>
+					<span class="md-headline">2017-07-18</span>
+				</md-card-title-text>
+			</md-card-title>
+			<md-card-content>
+				<p>Bootstrap样式优化</p>
+			</md-card-content>
+		</md-card>
+		<md-card>
+			<md-card-title>
+				<md-card-title-text>
+					<span class="md-headline">2017-06-25</span>
+				</md-card-title-text>
+			</md-card-title>
+			<md-card-content>
+				<p>升级bootstrap样式</p>
+				<p>1.引入圆角背景</p>
+				<p>2.ac-table改用table实现。</p>
+			</md-card-content>
+		</md-card>
+		<md-card>
+			<md-card-title>
+				<md-card-title-text>
+					<span class="md-headline">2017-03-18</span>
+				</md-card-title-text>
+			</md-card-title>
+			<md-card-content>
+				<p>升级bootstrap样式</p>
+				<p>1.更新框架，优化左侧导航动画</p>
+				<p>2.优化对话框颜色，包括：头、尾、背景的透明度等。</p>
+				<p>3.引入ac-table组件，支持排序，表格更具特色！留个小BUG，有心人自己处理吧。</p>
+				<p>由于在safari上存在布局问题，AC升级Material Design降回到1.1.1。</p>
+			</md-card-content>
+		</md-card>
+		<md-card>
+			<md-card-title>
+				<md-card-title-text>
+					<span class="md-headline">2017-02-05</span>
+				</md-card-title-text>
+			</md-card-title>
+			<md-card-content>
+				<p>AC升级Material Design到1.1.3</p>
+			</md-card-content>
+		</md-card>
+		<md-card>
+			<md-card-title>
+				<md-card-title-text>
+					<span class="md-headline">2017-01-01</span>
+				</md-card-title-text>
+			</md-card-title>
+			<md-card-content>
+				<p>新年快乐，新新气象，给大家带来全新的Bootstrap主题</p>
+				<p>1. 优化色彩，更加鲜明，一扫原来的老气。</p>
+				<p>2. 查询、新建按钮不在单独占用一行。</p>
+				<p>3. 分页栏重新布局，更加合理。</p>
+				<p>4. bootstrap angular升级到2.4版本（https://angular-ui.github.io/bootstrap/）。</p>
+			</md-card-content>
+		</md-card>
+		<md-card>
+			<md-card-title>
+				<md-card-title-text>
+					<span class="md-headline">2016-12-18</span>
+				</md-card-title-text>
+			</md-card-title>
+			<md-card-content>
+				<p>优化ExtJS6样式</p>
+				<p>1. 点击查询按钮跳转到第一页</p>
+				<p>2. 查询form布局优化，查询/清空按钮放不在单独占用一整行，更加合理。</p>
+				<p>3. 主Tabpanel上增加关闭/关闭其它/关闭所有功能。</p>
+			</md-card-content>
+		</md-card>
+		<md-card>
+			<md-card-title>
+				<md-card-title-text>
+					<span class="md-headline">2016-11-26</span>
+				</md-card-title-text>
+			</md-card-title>
+			<md-card-content>
+				<p>更新Bootstrap样式！</p>
+			</md-card-content>
+		</md-card>
+		<md-card>
+			<md-card-title>
+				<md-card-title-text>
+					<span class="md-headline">2016-10-22</span>
+				</md-card-title-text>
+			</md-card-title>
+			<md-card-content>
+				<p>增加ExtJS 6 样式，使用AC自定义主题及经典主题，敬请体验。</p>
+				<p>增加《使用必读》。</p>
+				<p>修复新建项目时验证问题。</p>
+			</md-card-content>
+		</md-card>
+		<md-card>
+			<md-card-title>
+				<md-card-title-text>
+					<span class="md-headline">2016-10-04</span>
+				</md-card-title-text>
+			</md-card-title>
+			<md-card-content>
+				<p>增加上传文本内容笔记功能。</p>
+				<p>调整模板文件到templates文件夹中，views文件夹只用于存放JSP。</p>
+			</md-card-content>
+		</md-card>
+		<md-card>
+			<md-card-title>
+				<md-card-title-text>
+					<span class="md-headline">2016-10-01</span>
+				</md-card-title-text>
+			</md-card-title>
+			<md-card-content>
+				<p>增加AC高级使用文档</p>
+			</md-card-content>
+		</md-card>
+		<md-card>
+			<md-card-title>
+				<md-card-title-text>
+					<span class="md-headline">2016-08-27</span>
+				</md-card-title-text>
+			</md-card-title>
+			<md-card-content>
+				<p>增加笔记本功能</p>
+			</md-card-content>
+		</md-card>
+		<md-card>
+			<md-card-title>
+				<md-card-title-text>
+					<span class="md-headline">2016-08-11</span>
+				</md-card-title-text>
+			</md-card-title>
+			<md-card-content>
+				<p>增加日期选择控件</p>
+				<p>发现不少同学在处理日期时不知道用什么控件，故对每个示例都增加了日期处理，以供参考。</p>
+			</md-card-content>
+		</md-card>
+		<md-card>
+			<md-card-title>
+				<md-card-title-text>
+					<span class="md-headline">2016-07-17</span>
+				</md-card-title-text>
+			</md-card-title>
+			<md-card-content>
+				<p>页面优化</p>
+			</md-card-content>
+		</md-card>
+		<md-card>
+			<md-card-title>
+				<md-card-title-text>
+					<span class="md-headline">2016-07-03</span>
+				</md-card-title-text>
+			</md-card-title>
+			<md-card-content>
+				<p>增加Material Design风格页面样式</p>
+				<p>至此，AC已经支持三种前端样式：Material、Bootstrap、ExtJS</p>
+			</md-card-content>
+		</md-card>
+		<md-card>
+			<md-card-title>
+				<md-card-title-text>
+					<span class="md-headline">2016-06-10</span>
+				</md-card-title-text>
+			</md-card-title>
+			<md-card-content>
+				<p>增加JS压缩功能</p>
+				<p>主页的一些优化</p>
+			</md-card-content>
+		</md-card>
+		<md-card>
+			<md-card-title>
+				<md-card-title-text>
+					<span class="md-headline">2016-05-28</span>
+				</md-card-title-text>
+			</md-card-title>
+			<md-card-content>
+				<p>优化angular + bootstrap，增加JS动态加载功能</p>
+				<p>JS动态加载处理方式请查看使用指南中的JS动态加载模块</p>
+			</md-card-content>
+		</md-card>
+		<md-card>
+			<md-card-title>
+				<md-card-title-text>
+					<span class="md-headline">2016-05-21</span>
+				</md-card-title-text>
+			</md-card-title>
+			<md-card-content>
+				<p>优化bootstrap风格样式</p>
+				<p>增加QQ联系方式：69206812</p>
+			</md-card-content>
+		</md-card>
+		<md-card>
+			<md-card-title>
+				<md-card-title-text>
+					<span class="md-headline">2016-05-15</span>
+				</md-card-title-text>
+			</md-card-title>
+			<md-card-content>
+				<p>修复extjs样式无法打开问题</p>
+				<p>增加extjs样式登录页面</p>
+				<p>修改Interceptor和ControllerAdvice路径到项目路径</p>
+				<p>修复主键名不为id时，下载代码有错误问题</p>
+				<p>优化bootstrap样式主页风格</p>
+			</md-card-content>
+		</md-card>
+		<md-card>
+			<md-card-title>
+				<md-card-title-text>
+					<span class="md-headline">2016-05-03</span>
+				</md-card-title-text>
+			</md-card-title>
+			<md-card-content>
+				<p>修改mybatis mapper xml文件的dtd定义，从ibatis.apache.org 改到 mybatis.org</p>
+			</md-card-content>
+		</md-card>
+		<md-card>
+			<md-card-title>
+				<md-card-title-text>
+					<span class="md-headline">2016-05-02</span>
+				</md-card-title-text>
+			</md-card-title>
+			<md-card-content>
+				<p>增加使用教程。</p>
+			</md-card-content>
+		</md-card>
+		<md-card>
+			<md-card-title>
+				<md-card-title-text>
+					<span class="md-headline">2016-04-24</span>
+				</md-card-title-text>
+			</md-card-title>
+			<md-card-content>
+				<p>修复IE下页面无法正确显示的问题。</p>
+			</md-card-content>
+		</md-card>
+		<md-card>
+			<md-card-title>
+				<md-card-title-text>
+					<span class="md-headline">2016-04-09</span>
+				</md-card-title-text>
+			</md-card-title>
+			<md-card-content>
+				<p>左侧菜单增加菜单：最近项目，显示最近的10个</p>
+				<p>优化手机游戏器访问体验，下拉滚动时支持浏览器自动隐藏地址栏（测试版本chrome、safari）</p>
+			</md-card-content>
+		</md-card>
+		<md-card>
+			<md-card-title>
+				<md-card-title-text>
+					<span class="md-headline">2016-03-23</span>
+				</md-card-title-text>
+			</md-card-title>
+			<md-card-content>
+				<p>实现平台JS动态加载，提高加载速度与性能</p>
+			</md-card-content>
+		</md-card>
+		<md-card>
+			<md-card-title>
+				<md-card-title-text>
+					<span class="md-headline">2016-02-28</span>
+				</md-card-title-text>
+			</md-card-title>
+			<md-card-content>
+				<p>更新bootstrap主页，更高大上，有木有！</p>
+			</md-card-content>
+		</md-card>
+		<md-card>
+			<md-card-title>
+				<md-card-title-text>
+					<span class="md-headline">2016-02-17</span>
+				</md-card-title-text>
+			</md-card-title>
+			<md-card-content>
+				<p>V1.0 稳定版上线</p>
+			</md-card-content>
+		</md-card>
+	</md-dialog-content>
+</md-dialog>

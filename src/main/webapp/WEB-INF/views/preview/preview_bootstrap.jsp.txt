@@ -1,0 +1,139 @@
+<%@page import="java.util.Date"%>
+<%@ page language="java" contentType="text/html;charset=utf-8"%>
+
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%> 
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
+<c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
+<c:set var="sysVersion" value="${applicationScope.SysVersion}"></c:set>
+
+<!DOCTYPE html>
+<html lang="zh-CN" ng-app="myApp">
+	<head>
+		<title>代码生成器-web版</title>
+		<link rel="shortcut icon" href="${ctx}/resources/images/ac.ico"/>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+		<link rel="stylesheet" href="${ctx}/resources/css/bootstrap/css/bootstrap.min.css?v=${sysVersion}"/>
+		
+		<link rel="stylesheet" href="${ctx}/resources/css/MaterialIcons/material-icons.css?v=${sysVersion}">
+		<link rel="stylesheet" href="${ctx}/resources/css/fontawesome/css/font-awesome.min.css?v=${sysVersion}">
+		
+		<script type="text/javascript">
+			var ctx = '${ctx}';
+			var sysVersion = '${sysVersion}';
+		</script>
+		
+		<link rel="stylesheet" href="${ctx}/resources/js/angular/toaster/toaster.css?v=${sysVersion}"/>
+		
+		<link rel="stylesheet" href="${ctx}/preview/getGenFile?tplPath=template/bootstrap/&path=restpls/resources/js/angular/togglemenu_boot/togglemenu.css&type=resource&nodeId=1&projectId=1">
+		<link rel="stylesheet" href="${ctx}/preview/getGenFile?tplPath=template/bootstrap/&path=restpls/resources/js/angular/angular-aside/css/angular-aside.min.css&type=resource&nodeId=1&projectId=1">
+		<link rel="stylesheet" href="${ctx}/preview/getGenFile?tplPath=template/bootstrap/&path=restpls/resources/css/app.css&type=resource&nodeId=1&projectId=1">
+		<link rel="stylesheet" href="${ctx}/preview/getGenFile?tplPath=template/bootstrap/&path=restpls/resources/js/angular/angular-busy/angular-busy.css&type=resource&nodeId=1&projectId=1">
+		
+		<script src="${ctx}/resources/js/angular/angular.js?v=${sysVersion}"></script>
+		<script src="${ctx}/resources/js/angular/i18n/angular-locale_zh-cn.js?v=${sysVersion}"></script>
+		
+		<script src="${ctx}/resources/js/angular/angular-route.js?v=${sysVersion}"></script>
+		<script src="${ctx}/resources/js/angular/angular-sanitize.min.js?v=${sysVersion}"></script>
+		<script src="${ctx}/resources/js/angular/ui-bootstrap-tpls-1.3.2.min.js"></script>
+		<script src="${ctx}/resources/js/angular/angular-animate.min.js?v=${sysVersion}"></script>
+		<script src="${ctx}/resources/js/angular/toaster/toaster.js?v=${sysVersion}"></script>
+		<script src="${ctx}/resources/js/moment/moment.min.js?v=${sysVersion}"></script>
+		
+		<script src="${ctx}/preview/getGenFile?tplPath=template/bootstrap/&path=restpls/resources/js/angular/togglemenu_boot/togglemenu.js&type=resource&nodeId=1&projectId=1"></script>
+		<script src="${ctx}/preview/getGenFile?tplPath=template/bootstrap/&path=restpls/resources/js/angular/angular-aside/js/angular-aside.min.js&type=resource&nodeId=1&projectId=1"></script>
+		<script src="${ctx}/preview/getGenFile?tplPath=template/bootstrap/&path=restpls/resources/js/angular/angular-busy/angular-busy.js&type=resource&nodeId=1&projectId=1"></script>
+		<script src="${ctx}/preview/getGenFile?tplPath=template/bootstrap/&path=restpls/resources/js/ocLazyLoad/ocLazyLoad.min.js&type=resource&nodeId=1&projectId=1"></script>
+		
+		<script src="${ctx}/directive/pagination/pagination.js?v=${sysVersion}"></script>
+		
+		<script src="${ctx}/preview/getGenFile?tplPath=template/bootstrap/&path=confirmDialogs.js&type=resource&nodeId=1&projectId=1"></script>
+		<script src="${ctx}/preview/getGenFile?tplPath=template/bootstrap/&path=app.js&type=bootstrap_ng_AppJS&nodeId=1&projectId=${projectId}"></script>
+		
+		
+		<script type="text/javascript">
+			var projectName = '${projectName}';						
+			myApp.config(['$routeProvider',
+	        	function($routeProvider,$routeParams) {
+	          		$routeProvider.
+	          		when('/home', {
+		          		templateUrl: ctx + '/templates/preview/bootstrap_home.html?v=' + sysVersion,
+		          		controller: 'HomeCtrl'
+	         		})
+	         }]);
+	        myApp.navNames['/home']='首页';
+	        myApp.controller('HomeCtrl', function($rootScope, $scope, $http, $location, $uibModal, toaster, confirmDialogs){});
+		</script>
+	</head>
+
+	<body ng-controller="MainCtrl">
+		<div class="navtogglediv navtogglediv-show-hide" ng-show="$root.isRouteLoading" ng-cloak>
+			<div style="font-size:25px;" class="fa fa-cog fa-spin"></div>
+		</div>
+		<div class="wrapper">
+			<nav class="navbar navbar-ac navbar-fixed-top" role="navigation" style="margin-bottom: 0">
+				<div class="navbar-header">
+					<span ng-if="!isLeftNavShow()" class="navSilderShowSpan pull-left leftNavMenuToggle material-icons" aria-hidden="true" ng-click1="openAside()" ng-mouseover="openAside()">menu</span>
+					<a role="button" class="navbar-brand " href="${ctx}${baseUrl}/#/home">${projectName}</a>
+				</div>
+				<nav class="collapse navbar-collapse bs-navbar-collapse">
+					<ul class="nav navbar-nav navbar-right" style="margin-right: 15px;">
+			            <li class="dropdown" uib-dropdown="">
+		                    <a role="button" class="dropdown-toggle" uib-dropdown-toggle="" aria-haspopup="true" aria-expanded="false">
+		                        <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> 设置 <b class="caret"></b>
+		                    </a>
+		                    <ul class="dropdown-menu">
+		                    	<li><a href="#accordion">XXX 你好</a></li>
+		                    	<li role="separator" class="divider"></li>
+		                        <li><a href="#">帮助</a></li>
+		                        <li><a href="#">反馈</a></li>
+		                        <li><a href="#">其它</a></li>
+		                    </ul>
+		                </li>
+			            <li><a ng-click="logout('${ctx}/preview/${projectIdCode}/nglogin')" tooltip-placement="bottom" uib-tooltip="退出"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> 退出</a></li>
+			       </ul>
+				</nav>
+				
+				<div ng-show="leftNavLock" class="leftNavLockDiv hidden-sm hidden-xs">
+					<ul class="docs-menu">
+						<div style="padding: 10px 10px 0px;">
+							<p>
+                               <i>菜单功能</i>
+                               <span style="font-size: 22px;cursor: pointer;" class="pull-right material-icons" ng-click="toggleLeftNavLock()" uib-tooltip="隐藏菜单" tooltip-placement="left">lock</span>
+                        	</p>
+						</div>
+						<li style="cursor: pointer;" ng-repeat="menu in menu.menus" ng-class="{'childActive' : isSectionSelected(menu)}">
+				      		 <menu-link menu="menu" ng-if="menu.type === 'link'"></menu-link>
+				             <menu-toggle menu="menu" ng-if="menu.type === 'toggle'"></menu-toggle>
+				      	</li>
+					</ul>
+				</div>
+			</nav>
+			
+			<div class="page-wrapper" ng-style="pageContentStyle">
+				<div class="container-fluid" style="padding-left: 0px;padding-right: 0px;">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+						  <h3 class="panel-title">{{getNavName()}}</h3>
+						</div>
+						<div class="panel-body" ng-view></div>
+					</div>
+				</div>
+			</div>
+			
+			<!-- <div class="page-wrapper" ng-style="pageContentStyle">
+				<h3 style="etter-spacing: -1px;font-weight:normal;margin-top:10px;">{{getNavName()}}</h3>
+				<div class="container-fluid" ng-view></div>
+			</div> -->
+			<toaster-container toaster-options="{'time-out': 3000, 'close-button':true, 'position-class': 'toast-bottom-right'}"></toaster-container>
+		</div>
+		<footer class="footer">
+			<div class="container">
+				<p class="text-muted" align="center" style="height: 32px;line-height: 32px;">${projectName}</p>
+			</div>
+	    </footer>
+	</body>
+</html>

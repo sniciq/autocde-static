@@ -1,0 +1,26 @@
+
+
+gcloud app deploy autocode-start/src/main/appengine/app.yaml
+
+
+gcloud auth application-default login
+
+mvn appengine:deploy
+gcloud app browse
+
+
+mvn appengine:deploy
+
+appengine-maven-plugin:1.3.2:deploy java.nio.file.NoSuchFileException app.yaml
+
+
+mvn clean install '-Dmaven.test.skip=true' -Ppublish
+
+<plugin>
+	<groupId>com.google.cloud.tools</groupId>
+	<artifactId>appengine-maven-plugin</artifactId>
+	<version>>1.3.2</version>
+</plugin>
+
+
+mvn appengine:deploy clean install '-Dmaven.test.skip=true' -Ppublish

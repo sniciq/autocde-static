@@ -1,0 +1,39 @@
+{
+  "name": "gulp_demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "amdefine": "^1.0.1",
+    "gulp": "^3.9.1",
+    "gulp-cssmin": "^0.1.7",
+    "gulp-html-minifier": "^0.1.8",
+    "gulp-htmlmin": "2.0.0",
+    "gulp-ng-annotate": "^2.0.0",
+    "gulp-plumber": "^1.1.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^1.5.3",
+    "gulp-util": "^3.0.7",
+    "lodash": "^4.17.4",
+    "lodash._escapehtmlchar": "^2.4.1",
+    "lodash._escapestringchar": "^2.4.1",
+    "lodash._isnative": "^2.4.1",
+    "lodash._reunescapedhtml": "^2.4.1",
+    "lodash._shimkeys": "^2.4.1",
+    "lodash.defaults": "^4.2.0",
+    "lodash.isobject": "^3.0.2",
+    "lodash.values": "^4.3.0",
+    "lru-cache": "^4.1.1",
+    "process-nextick-args": "^1.0.7",
+    "rmdir": "^1.2.0",
+    "safe-buffer": "^5.1.1",
+    "sigmund": "^1.0.1",
+    "stream-series": "^0.1.1",
+    "util-deprecate": "^1.0.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

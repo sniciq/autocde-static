@@ -1,0 +1,20 @@
+<md-content class="autoScroll" cg-busy="{promise:promise,templateUrl:'',message:'正在提交...',backdrop:true,delay:0,minDuration:0}">
+	<form role="form" novalidate name="myForm">
+		<div layout="row">
+			<md-button class="md-icon-button" aria-label="Favorite" ng-click="back();">
+				<md-icon class="material-icons">reply</md-icon>
+				<md-tooltip md-direction="bottom">返回</md-tooltip>
+			</md-button>
+			<div flex layout-gt-sm="row" class="noError">
+		        <md-input-container flex md-no-float class="md-block">
+		          <input ng-model="editForm.title" placeholder="标题, 最长20个汉字" auto-focus>
+		        </md-input-container>
+		    </div>
+	        <md-button class="md-icon-button" aria-label="Settings" ng-click="save();">
+				<md-tooltip md-direction="bottom">保存</md-tooltip>
+				<md-icon class="material-icons">save</md-icon>
+			</md-button>
+		</div>
+		<div class="codeNavFade" ui-ace="aceEditorOptions" ng-model="editForm.content" ng-style="aceheight"></div>
+	</form>
+</md-content>

@@ -1,0 +1,32 @@
+<md-dialog aria-label="数据表导入">
+	<md-toolbar>
+	    <div class="md-toolbar-tools">
+	      <h2>笔记上传</h2>
+	      <span flex></span>
+	      <md-button class="md-icon-button" ng-click="cancel()">
+			<i class="material-icons">close</i>
+	      </md-button>
+	    </div>
+	</md-toolbar>
+	<md-dialog-content layout-padding>
+   		<div cg-busy="{promise:promise,templateUrl:'',message:'正在提交...',backdrop:true,delay:0,minDuration:0}">
+   		<form class="form-horizontal" role="form" novalidate name="myForm">
+			<div layout layout-xs="column">
+				<div>
+					<p class="form-control-static">目前只支持文本文件解析</p>
+				</div>
+			</div>
+			<div layout layout-xs="column">
+				<label class="col-md-3 control-label" tooltip="请上传文本内容文件，文件尺寸小于1MB">选择文件：<span class="glyphicon glyphicon-info-sign" aria-hidden="true" ></span></label>
+				<div class="col-md-3">
+					<input class="input-file" type="file" fileread="uploadInfo.txtFile" >
+				</div>
+			</div>
+		</form>
+		</div>
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+    	<md-button class="md-raised md-primary" ng-click="upload()">上传</md-button>
+		<md-button class="md-raised md-default" ng-click="cancel()">取消</md-button>
+    </md-dialog-actions>
+</md-dialog>

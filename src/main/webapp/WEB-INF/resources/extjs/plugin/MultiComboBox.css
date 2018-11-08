@@ -1,0 +1,55 @@
+
+.ux-MultiComboBox-icon {
+	width:16px;
+	height:16px;
+	float:left;
+	background-position: -1px -1px ! important;
+	background-repeat:no-repeat ! important;
+}
+.ux-MultiComboBox-icon-checked {
+	background: transparent url(../resources/images/default/menu/checked.gif);
+}
+.ux-MultiComboBox-icon-unchecked {
+	background: transparent url(../resources/images/default/menu/unchecked.gif);
+}
+
+.ux-combo-selectall{  
+    padding:3px;  
+}  
+.ux-combo-selectall-icon-checked{  
+    background: transparent url(../resources/images/default/menu/checked.gif);  
+}  
+.ux-combo-selectall-icon-unchecked {    
+    background: transparent url(../resources/images/default/menu/unchecked.gif);    
+}  
+.ux-combo-selectall-icon {  
+    text-indent:1.8em;  
+    background-position: 3px 2px ! important;    
+    background-repeat:no-repeat ! important;    
+    height:22px;  
+    line-height:20px;  
+    font-size:12px;  
+    font-weight:bold;  
+    -moz-user-select:none; 
+    
+    background-color: #ffffff; 
+}
+
+.ux-combo-removeall{  
+    padding:3px;  
+    background: transparent url(../resources/images/default/grid/drop-no.gif);  
+    
+    text-indent:1.8em;  
+    background-position: 3px 2px ! important;    
+    background-repeat:no-repeat ! important; 
+    height:22px;  
+    line-height:20px;  
+    font-size:12px;  
+    font-weight:bold;  
+    -moz-user-select:none;
+    
+    cursor: hand;
+    background-color: #eeeeee;
+} 
+ 
+/* eof */

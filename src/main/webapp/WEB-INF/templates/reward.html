@@ -1,0 +1,21 @@
+<md-dialog aria-label="打赏AC" ng-class="{'md-dialog-fullscreen-md': !$root.customFullscreen}">
+	<md-toolbar>
+	    <div class="md-toolbar-tools">
+	      <h2>打赏AC</h2>
+	      <span flex></span>
+	      <md-button class="md-icon-button" ng-click="cancel()">
+			<i class="material-icons">close</i>
+	      </md-button>
+	    </div>
+	</md-toolbar>
+	<md-dialog-content layout-padding >
+		<div layout="row" class="md-whiteframe-12dp" layout-padding layout-wrap style="padding-bottom: 3px;padding-left:15px;" ng-cloak>
+				<p style="margin: 0px 0px 0px 5px;">AC不收费！您的打赏会让AC走得更远，感谢您的支持！</p>
+		</div>
+		<div layout="row" layout-padding layout-wrap style="padding-bottom: 3px;">
+			<div ng-repeat="item in images" ng-cloak flex-xs="100" flex-gt-xs="50" flex-sm="50" layout layout-align="center center">
+				<img alt="" ng-src="{{item}}" style="max-width: 350px; max-height:350px; width: 100%; height: 100%">
+			</div>
+		</div>
+	</md-dialog-content>
+</md-dialog>

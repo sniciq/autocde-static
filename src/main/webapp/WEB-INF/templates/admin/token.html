@@ -1,0 +1,35 @@
+<div style="padding: 6px;">
+	<div class="md-whiteframe-8dp" style="overflow: auto;" id="content" >
+		<md-toolbar class="ac-table-toolbar md-default" ng-hide="!(selectedItems | isEmpty)">
+			<div class="md-toolbar-tools">
+				<span>Token列表</span>
+				<span flex></span>
+				<md-button class="md-icon-button" aria-label="Settings" ng-click="search();">
+					<md-tooltip md-direction="bottom">刷新</md-tooltip>
+					<md-icon class="material-icons">autorenew</md-icon>
+				</md-button>
+			</div>
+		</md-toolbar>
+		<md-toolbar class="ac-table-toolbar alternate" ng-show="!(selectedItems | isEmpty)">
+			<div class="md-toolbar-tools">
+				<span>已选中 {{selectedItems | keyCountInObject}} 个</span>
+				<span flex></span>
+				<md-button class="md-icon-button" aria-label="Settings" ng-click="del();">
+					<md-tooltip md-direction="bottom">删除</md-tooltip>
+					<md-icon class="material-icons">delete</md-icon>
+				</md-button>
+			</div>
+		</md-toolbar>
+		<md-content flex>
+			<md-progress-linear md-mode="indeterminate" ng-show="isLoading"></md-progress-linear>
+			<ac-table>
+				<ac-table-column header="邮箱" field="email"></ac-table-column>
+				<ac-table-column header="SessionId" field="authSessionId"></ac-table-column>
+				<ac-table-column header="token" field="token"></ac-table-column>
+				<ac-table-column header="创建时间" field="tokenCreateDate"></ac-table-column>
+				<ac-table-grid items="dataList" selectable="true" multiple="false" id-field="authSessionId" selected-items="selectedItems"  paging="pagination" on-sort-change="search()"></ac-table-grid>
+			</ac-table>
+			<pagination total-items="dataList.total" items-per-page="pagination.limit" ng-model="pagination.currentPage" max-size="pagination.maxSize" num-pages="pagination.allPages" ng-change="pageChanged()"></pagination>
+		</md-content>
+	</div>
+</div>

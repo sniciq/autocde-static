@@ -1,0 +1,1 @@
+angular.module("myApp").controller("QuickStartCtrl",["$rootScope","$scope","$location","$routeParams","$http","$anchorScroll",function(o,t,r,c,l,n){prettyPrint(),t.ngScrollTo=function(o){n.yOffset=50,n(o)}}]);

@@ -1,0 +1,179 @@
+<md-dialog aria-label="数据表" ng-class="{'md-dialog-fullscreen-lg': !$root.customFullscreen}">
+	<md-toolbar>
+	    <div class="md-toolbar-tools">
+	      <h2>功能模块</h2>
+	      <span flex></span>
+	      <md-button class="md-icon-button" ng-click="cancel()">
+			<i class="material-icons">close</i>
+	      </md-button>
+	    </div>
+	</md-toolbar>
+	<md-dialog-content layout-padding >
+	<div cg-busy="{promise:promise,templateUrl:'',message:'正在提交...',backdrop:true,delay:0,minDuration:0}">
+	<form class="form-horizontal" role="form" novalidate name="myForm">
+		<div layout layout-xs="column">
+			<md-input-container flex>
+				<input name="name" ng-model="module.name" type="text" placeholder="模块名称" required>
+				<div ng-messages="myForm.name.$error" role="alert" md-auto-hide="false">
+		        	<div ng-message="required">该项必填</div>
+		        </div>
+		    </md-input-container>
+		    <md-input-container flex>
+				<input name="nameEN" ng-model="module.nameEN" type="text" placeholder="英文名称" required ng-pattern="/^[A-Za-z]+$/">
+				<div ng-messages="myForm.nameEN.$error" role="alert" multiple md-auto-hide="false">
+		        	<div ng-message="required">该项必填</div>
+		        	<div ng-message="pattern">只能输入英文</div>
+		        </div>
+		    </md-input-container>
+		</div>
+		
+		<div layout layout-xs="column" ng-show="!module.groupItem">
+			<md-menu ng-show="menuList.length > 0">
+				<md-button aria-label="" class="md-raised md-primary" ng-click="$mdOpenMenu($event)">加入菜单</md-button>
+				<md-menu-content width="3">
+					<md-menu-item ng-repeat="item in menuList">
+						<md-button ng-click="module.groupName=item.groupName;module.groupNameEN=item.groupNameEN;">{{item.groupName}}</md-button>
+					</md-menu-item>
+				</md-menu-content>
+			</md-menu>
+			<md-input-container flex >
+				<input ng-model="module.groupName" type="text" placeholder="一级菜单（非必填）">
+		    </md-input-container>
+			<md-input-container flex >
+				<input ng-model="module.groupNameEN" type="text" placeholder="菜单英文名称（非必填）" ng-pattern="/^[A-Za-z]+$/"> 
+		    </md-input-container>
+		</div>
+		<div layout>
+			<md-input-container flex=30 flex-xs=100>
+		    	<label>类型</label>
+		    	<md-select ng-model="module.type" required ng-change="onModuleTypeChange()">
+					<md-option value="1">数据表管理</md-option>
+					<md-option value="2">联合查询</md-option>
+		        </md-select>
+		    </md-input-container>
+		    <div flex=70 flex-xs=100 style="font-weight: bold;">
+		    	<p ng-if="module.type == 1">数据表管理 --> 只能选择一个数据表</p>
+		    	<p ng-if="module.type == 2">联合查询  --> 选择多个表进行关联查询</p>
+		    </div>
+		</div>
+	    <!-- <div layout layout-xs="column">
+	    	<md-checkbox ng-model="module.hasAdd" ng-true-value="1" ng-false-value="0"> 包含增加/修改</md-checkbox>
+	    	<md-checkbox ng-model="module.hasDelete" ng-true-value="1" ng-false-value="0"> 包含删除</md-checkbox>
+	    </div> -->
+	    
+	    <div class="md-whiteframe-2dp" layout layout-wrap>
+	    	<md-menu>
+				<md-button aria-label="" class="md-raised md-primary" ng-click="$mdOpenMenu($event)">选择 数据表</md-button>
+				<md-menu-content width="3">
+					<md-menu-item ng-repeat="item in tableList">
+						<div layout>
+							<md-checkbox ng-model="item.selected" ng-change="tableItemClick(item);">{{item.name}}</md-checkbox>
+						</div>
+					</md-menu-item>
+				</md-menu-content>
+			</md-menu>
+			<div flex layout layout-wrap layout-align="start center">
+				<div ng-repeat="item in tableList | filter:{selected:true}" layout layout-align="start center" class="project-module-item">
+					<span>{{item.name}}</span><i class="material-icons" style="cursor: pointer;" ng-click="tableItemDelete(item);">close</i>
+				</div>
+			</div>
+	    </div>
+	    
+	    <div class="md-whiteframe-2dp" layout layout-wrap style="margin-top: 20px;">
+		    <md-menu>
+				<md-button aria-label="" class="md-raised md-primary" ng-click="$mdOpenMenu($event)" >选择 查询项</md-button>
+				<md-menu-content width="3">
+					<md-menu-item>
+						<div layout><md-checkbox ng-model="isChkAllSelectColumns" ng-change="toggleAllSelectColumnsCheck(isChkAllSelectColumns);">全选</md-checkbox></div>
+					</md-menu-item>
+					<md-menu-item ng-repeat="item in selectColumns">
+						<div layout>
+							<md-checkbox ng-model="item.selected" ng-change="optionAllSelectColumnsToggled()">{{item.tableName}}-->{{item.name}}</md-checkbox>
+						</div>
+					</md-menu-item>
+				</md-menu-content>
+			</md-menu>
+			<div flex layout layout-wrap layout-align="start center">
+				<div ng-repeat="item in selectColumns | filter:{selected:true}" layout layout-align="start center" class="project-module-item">
+					<span>{{item.tableName}}-->{{item.name}}</span><i class="material-icons" style="cursor: pointer;" ng-click="item.selected=false;optionAllSelectColumnsToggled();">close</i>
+				</div>
+			</div>
+	    </div>
+	    
+	    <div class="md-whiteframe-2dp" layout layout-wrap style="margin-top: 20px;">
+		    <md-menu>
+				<md-button aria-label="" class="md-raised md-primary" ng-click="$mdOpenMenu($event)">选择 显示项</md-button>
+				<md-menu-content width="3">
+					<md-menu-item>
+						<div layout><md-checkbox ng-model="isChkAllGridColumns" ng-change="toggleAllGridColumnsCheck(isChkAllGridColumns);">全选</md-checkbox></div>
+					</md-menu-item>
+					<md-menu-item ng-repeat="item in gridColumns">
+						<div layout>
+							<md-checkbox ng-model="item.selected" ng-change="optionAllGridColumnsToggled()">{{item.tableName}}-->{{item.name}}</md-checkbox>
+						</div>
+					</md-menu-item>
+				</md-menu-content>
+			</md-menu>
+			<div flex layout layout-wrap layout-align="start center">
+				<div ng-repeat="item in gridColumns | filter:{selected:true}" layout layout-align="start center" class="project-module-item">
+					<span>{{item.tableName}}-->{{item.name}}</span><i class="material-icons" style="cursor: pointer;" ng-click="item.selected=false;optionAllGridColumnsToggled();">close</i>
+				</div>
+			</div>
+		</div>
+	    
+	    <div class="md-whiteframe-12dp" layout="column" layout-align="center start" style="margin-top: 20px;">
+		    <div flex layout layout-fill layout-xs="column" ng-repeat="item in module.relations track by $index" style="margin: 5px;">
+		    	<md-input-container md-no-float flex=20 flex-xs=100>
+		    		<md-select ng-model="item.relType" placeholder="关系" required>
+			    		<md-option ng-repeat="item in ['LEFT JOIN','WHERE','GROUP BY','ORDER BY','INNER JOIN']" value="{{item}}">{{item}}</md-option>
+			    	</md-select>
+		        </md-input-container>
+		        <md-input-container md-no-float ng-if="item.relType == 'GROUP BY'" flex=70 flex-xs=100>
+		        	<md-select ng-model="item.groupBy" placeholder="分组">
+			    		<md-option ng-repeat="item in selectColumns" value="{{item.id}}">【{{item.tableName}}】{{item.name}}</md-option>
+			    	</md-select>
+		        </md-input-container>
+		        <md-input-container md-no-float ng-if="item.relType == 'ORDER BY'" flex=30 flex-xs=100>
+		        	<md-select ng-model="item.orderBy" placeholder="排序字段">
+			    		<md-option ng-repeat="item in selectColumns" value="{{item.id}}">【{{item.tableName}}】{{item.name}}</md-option>
+			    	</md-select>
+		        </md-input-container>
+				<md-input-container md-no-float ng-if="item.relType == 'ORDER BY'" flex=40 flex-xs=100>
+		        	<md-select ng-model="item.orderDir" placeholder="排序方式">
+			    		<md-option ng-repeat="item in ['ASC','DESC']" value="{{item}}">{{item}}</md-option>
+			    	</md-select>
+		        </md-input-container>
+		        <md-input-container md-no-float ng-if="item.relType != 'GROUP BY' && item.relType != 'ORDER BY'" flex=30 flex-xs=100>
+		        	<md-select ng-model="item.columnA" placeholder="A列">
+			    		<md-option ng-repeat="item in selectColumns" value="{{item.id}}">【{{item.tableName}}】{{item.name}}</md-option>
+			    	</md-select>
+		        </md-input-container>
+				<md-input-container md-no-float ng-if="item.relType != 'GROUP BY' && item.relType != 'ORDER BY'" flex=10 flex-xs=100>
+					<md-select ng-model="item.condtionType" placeholder="类型">
+			    		<md-option ng-repeat="item in  ['=','!=','>','>=','<','<=']" value="{{item}}">{{item}}</md-option>
+			    	</md-select>
+				</md-input-container>
+				<md-input-container md-no-float ng-if="item.relType != 'GROUP BY' && item.relType != 'ORDER BY' && item.relType != 'WHERE'" flex=30 flex-xs=100>
+					<md-select aria-label="..." placeholder="B列" ng-if="item.relType != 'WHERE'" ng-model="item.columnB" flex>
+		    			<md-option aria-label="" ng-repeat="item in selectColumns" value="{{item.id}}">【{{item.tableName}}】{{item.name}}</md-option>
+		    		</md-select>
+		    	</md-input-container>
+			    <md-input-container md-no-float ng-if="item.relType == 'WHERE'" flex=30 flex-xs=100>
+					<input type="text" placeholder="值" name="nameEN" ng-model="item.condtionValue">
+				</md-input-container>
+				<div flex=10>
+					<md-button class="md-icon-button" aria-label="delete" ng-click="deleteRelationColumn($index)" style="margin-top: 15px;">
+			          <md-icon class="material-icons">delete</md-icon>
+			        </md-button>
+				</div>
+		    </div>
+		    <md-button ng-show="module.type == 2" class="md-raised md-primary" ng-click="addRelationColumn()">增加关系</md-button>
+	    </div>
+	</form>
+	</div>
+	</md-dialog-content>
+	<md-dialog-actions layout layout-align="center">
+    	<md-button class="md-raised md-primary" ng-click="save()">保存</md-button>
+		<md-button class="md-raised md-default" ng-click="cancel()">取消</md-button>
+    </md-dialog-actions>
+</md-dialog>
